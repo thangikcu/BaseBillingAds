@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.scale
-import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.AdsComponents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ object AssetManager {
      */
     @Suppress("BlockingMethodInNonBlockingContext")
     fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = CoroutineScope(Dispatchers.IO).launch {
-        AdsApplication.application.assets.open(path).use {
+        AdsComponents.INSTANCE.application.assets.open(path).use {
             val d = Drawable.createFromStream(it, null)
             val b = (d as BitmapDrawable).bitmap
             b.scale(300, 533)
@@ -54,7 +54,7 @@ object AssetManager {
         reqWidth: Int,
         reqHeight: Int
     ): Bitmap? {
-        return AdsApplication.application.assets.open(path).use {
+        return AdsComponents.INSTANCE.application.assets.open(path).use {
             decodeSampledBitmapFromStream(it, reqWidth, reqHeight)
         }
     }

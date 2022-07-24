@@ -6,23 +6,19 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.android.billingclient.api.*
-import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.billing.RetryPolicies.connectionRetryPolicy
 import com.mmgsoft.modules.libs.billing.RetryPolicies.resetConnectionRetryPolicyCounter
 import com.mmgsoft.modules.libs.billing.RetryPolicies.taskExecutionRetryPolicy
-import com.mmgsoft.modules.libs.helpers.BillingLoadingState
-import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
-import com.mmgsoft.modules.libs.helpers.StateAfterBuy
+import com.mmgsoft.modules.libs.helpers.*
 import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
-import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
-import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 
 @SuppressLint("LogNotTimber")
-object BillingManager {
+object GoogleBillingManager {
     private val mAllProductDetails = mutableListOf<ProductDetails>()
     private val scope = CoroutineScope(Dispatchers.Main + Job())
     private val mProductInAppIds = mutableListOf<String>()
@@ -36,10 +32,6 @@ object BillingManager {
     var validPurchases = HashSet<Purchase>()
     var skuHistoryList = listOf<PurchaseHistoryRecord>()
     var state = StateAfterBuy.DISABLE
-
-    private val prefs by lazy {
-        AdsApplication.prefs
-    }
 
     private const val TAG = "BillingManager"
 
@@ -112,15 +104,6 @@ object BillingManager {
 //            .setUnderAgeOfConsent(BillingClient.UnderAgeOfConsent.UNDER_AGE_OF_CONSENT) /*For use Reward Product*/
             .build()
         connectToGooglePlayBillingService()
-    }
-
-    fun init(context: Context,
-             productInAppIds: List<String>,
-             productSubsIds: List<String>,
-             state: StateAfterBuy = StateAfterBuy.DISABLE,
-             item1: String, item2: String) {
-        AdsComponentConfig.updateInterstitialKey(item1).updateBannerKey(item2)
-        init(context, productInAppIds, productSubsIds, state)
     }
 
     private fun connectToGooglePlayBillingService() {
@@ -199,18 +182,14 @@ object BillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(AdsComponentConfig.interstitialKey)) {
-                putIsBilling(PREFS_BILLING_BUY_ITEM_1)
+            if(it.productId.contains(AdsComponents.INSTANCE.billingId.interstitial)) {
+                AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial = true
             }
 
-            if(it.productId.contains(AdsComponentConfig.bannerKey)) {
-                putIsBilling(PREFS_BILLING_BUY_ITEM_2)
+            if(it.productId.contains(AdsComponents.INSTANCE.billingId.banner)) {
+                AdsComponents.INSTANCE.adsPrefs.isBillingAdmobBanner = true
             }
         }
-    }
-
-    fun putIsBilling(key: String) {
-        AdsApplication.prefs.putBoolean(key, true)
     }
 
     /**
@@ -346,7 +325,7 @@ object BillingManager {
 //            handleConsumablePurchasesAsync(consumables)
 //            acknowledgeNonConsumablePurchaseAsync(nonConsumables)
         }
-        BillingManager.validPurchases = validPurchases
+        GoogleBillingManager.validPurchases = validPurchases
         Log.d(TAG, "handlePurchases() validPurchases" + validPurchases.size)
     }
 
@@ -415,10 +394,6 @@ object BillingManager {
             MoneyManager.addMoney(it.price, 1.0)
         } ?: onNonContains.invoke()
     }
-
-    fun isBuyItem1() = prefs.isBuyItem1()
-
-    fun isBuyItem2() = prefs.isBuyItem2()
 
     private fun List<ProductDetails>.mapToPurchaseProdDetails() = map {
         PurchaseProductDetails(false, it)

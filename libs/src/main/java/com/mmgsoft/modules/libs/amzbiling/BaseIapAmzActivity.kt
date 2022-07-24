@@ -5,20 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
-import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.R
-import com.mmgsoft.modules.libs.billing.BillingManager
 import com.mmgsoft.modules.libs.data.local.db.DbHelper
 import com.mmgsoft.modules.libs.data.model.db.EntitlementModel
 import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
 import com.mmgsoft.modules.libs.helpers.AmazonScreenType
-import com.mmgsoft.modules.libs.manager.MoneyManager.addMoney
+import com.mmgsoft.modules.libs.manager.MoneyManager
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
-import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_1
-import com.mmgsoft.modules.libs.utils.PREFS_BILLING_BUY_ITEM_2
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -99,6 +96,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                 notifyUpdateListView()
             }
             ProductDataResponse.RequestStatus.FAILED -> notifyUpdateListView()
+            else -> {}
         }
     }
 
@@ -121,7 +119,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     productItems.map { prodItem ->
                         if (prodItem.sku == receipt.sku) {
                             checkOnAddMoney(receipt) {
-                                addMoney(prodItem.price)
+                                MoneyManager.addMoney(prodItem.price)
                             }
                             return@map
                         }
@@ -133,12 +131,12 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         } else receipt.sku
 
                         if (sku.contains(prodItem.sku)) {
-                            if (prodItem.sku.contains(AdsComponentConfig.interstitialKey)) {
-                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_1)
-                            } else if(prodItem.sku.contains(AdsComponentConfig.bannerKey)) {
-                                BillingManager.putIsBilling(PREFS_BILLING_BUY_ITEM_2)
+                            if (prodItem.sku.contains(AdsComponents.INSTANCE.billingId.interstitial)) {
+                                AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial = true
+                            } else if(prodItem.sku.contains(AdsComponents.INSTANCE.billingId.banner)) {
+                                AdsComponents.INSTANCE.adsPrefs.isBillingAdmobBanner = true
                             } else checkOnAddMoney(receipt) {
-                                addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
+                                MoneyManager.addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
                             }
                             return@map
                         }
@@ -146,13 +144,14 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                 }
             }
             PurchaseResponse.RequestStatus.FAILED -> {}
+            else -> {}
         }
     }
 
     private fun checkOnAddMoney(receipt: Receipt, onNonContains: () -> Unit) {
         val skuId = if(receipt.productType == ProductType.SUBSCRIPTION) receipt.termSku else receipt.sku
         AdsComponentConfig.billingMappers.find { skuId.uppercase().contains(it.productId.uppercase()) }?.let {
-            addMoney(it.price, 1.0)
+            MoneyManager.addMoney(it.price, 1.0)
         } ?: onNonContains.invoke()
     }
 
@@ -173,6 +172,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                 }
             }
             PurchaseUpdatesResponse.RequestStatus.FAILED -> {}
+            else -> {}
         }
     }
 
@@ -191,7 +191,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         prodItem.isBuy = true
                     }
                     doOnBackground {
-                        AdsApplication.dbHelper.insertSubscriptionRecord(subscriptionModel)
+                        AdsComponents.INSTANCE.dbHelper.insertSubscriptionRecord(subscriptionModel)
                     }
                 }
                 ProductType.ENTITLED -> {
@@ -205,7 +205,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                         prodItem.isBuy = true
                     }
                     doOnBackground {
-                        AdsApplication.dbHelper.insertEntitlementRecord(entitlementModel)
+                        AdsComponents.INSTANCE.dbHelper.insertEntitlementRecord(entitlementModel)
                     }
                 }
             }

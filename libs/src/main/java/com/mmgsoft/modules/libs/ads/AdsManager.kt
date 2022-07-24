@@ -12,12 +12,11 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.mmgsoft.modules.libs.billing.BillingManager
-import com.mmgsoft.modules.libs.billing.BillingManager.isBuyItem1
+import com.mmgsoft.modules.libs.AdsComponents
+import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.dialog.PrepareLoadingAdsDialog
 import com.mmgsoft.modules.libs.etx.gone
 import com.mmgsoft.modules.libs.etx.visible
-import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.utils.NetworkUtils
 
 class AdsManager {
@@ -32,15 +31,15 @@ class AdsManager {
         testDevices.add(AdRequest.DEVICE_ID_EMULATOR)
         MobileAds.initialize(ctx)
         val requestConfiguration = RequestConfiguration.Builder()
-                .setTestDeviceIds(testDevices)
-                .build()
+            .setTestDeviceIds(testDevices)
+            .build()
         MobileAds.setRequestConfiguration(requestConfiguration)
 
         return this
     }
 
-    private fun showInterstitialWithCount(act: Activity, adsUnitId: String, closeAd: () -> Unit) {
-        if(isBuyItem1() || !NetworkUtils.isNetworkAvailable(act)) {
+    private fun showInterstitialWithCount(act: Activity, closeAd: () -> Unit) {
+        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial || !NetworkUtils.isNetworkAvailable(act)) {
             closeAd.invoke()
             return
         }
@@ -49,7 +48,7 @@ class AdsManager {
 
         currentClicked++
         if (currentClicked >= numberOfClicksToShowAds) {
-            forceShowInterstitial(act, adsUnitId) {
+            forceShowInterstitial(act) {
                 dialog.hide()
                 closeAd.invoke()
             }
@@ -60,43 +59,49 @@ class AdsManager {
         }
     }
 
-    fun forceShowInterstitial(act: Activity, adsUnitId: String, adClosed: () -> Unit) {
-        if(isBuyItem1() || !NetworkUtils.isNetworkAvailable(act)) {
-            adClosed.invoke()
+    @JvmOverloads
+    fun forceShowInterstitial(act: Activity, adClosed: (() -> Unit)? = null) {
+        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial || !NetworkUtils.isNetworkAvailable(act)) {
+            adClosed?.invoke()
             return
         }
         val dialog = createDialogFullScreen(act)
         dialog.show()
 
-        InterstitialAd.load(act, adsUnitId, AdRequest.Builder().build(), object : InterstitialAdLoadCallback() {
-            override fun onAdFailedToLoad(p0: LoadAdError) {
-                super.onAdFailedToLoad(p0)
-                dialog.dismiss()
-                adClosed.invoke()
-            }
-
-            override fun onAdLoaded(p0: InterstitialAd) {
-                super.onAdLoaded(p0)
-                p0.fullScreenContentCallback = object : FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        super.onAdDismissedFullScreenContent()
-                        dialog.dismiss()
-                        adClosed.invoke()
-                    }
+        InterstitialAd.load(
+            act,
+            BuildConfig.INTERSTITIAL_AD_UNIT_ID,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    super.onAdFailedToLoad(p0)
+                    dialog.dismiss()
+                    adClosed?.invoke()
                 }
-                p0.show(act)
-            }
-        })
+
+                override fun onAdLoaded(p0: InterstitialAd) {
+                    super.onAdLoaded(p0)
+                    p0.fullScreenContentCallback = object : FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent()
+                            dialog.dismiss()
+                            adClosed?.invoke()
+                        }
+                    }
+                    p0.show(act)
+                }
+            })
     }
 
     private fun createDialogFullScreen(ctx: Context): Dialog = PrepareLoadingAdsDialog(ctx)
 
-    fun showAdModBanner(context: Context,
-                        adsUnitId: String,
-                        adContainer: FrameLayout,
-                        shimmerFrameLayout: ShimmerFrameLayout,
-                        onLoadFailed: () -> Unit) {
-        if(!NetworkUtils.isNetworkAvailable(context)) {
+    fun showAdModBanner(
+        context: Context,
+        adContainer: FrameLayout,
+        shimmerFrameLayout: ShimmerFrameLayout,
+        onLoadFailed: () -> Unit
+    ) {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
             onLoadFailed.invoke()
             return
         }
@@ -104,7 +109,7 @@ class AdsManager {
         shimmerFrameLayout.startShimmer()
 
         val adView = AdView(context)
-        adView.adUnitId = adsUnitId
+        adView.adUnitId = BuildConfig.BANNER_AD_UNIT_ID
         adContainer.addView(adView)
         val adSize: AdSize = getAdBannerSize(context)
         adView.setAdSize(adSize)
@@ -140,8 +145,12 @@ class AdsManager {
     }
 
     fun rewardedAd(ctx: Context, adsUnitId: String) {
-        RewardedAd.load(ctx, adsUnitId, AdRequest.Builder().build(), object : RewardedAdLoadCallback() {
+        RewardedAd.load(
+            ctx,
+            adsUnitId,
+            AdRequest.Builder().build(),
+            object : RewardedAdLoadCallback() {
 
-        })
+            })
     }
 }

@@ -8,6 +8,7 @@ data class BillingMapper(
         fun create(productId: String, price: String) =
             BillingMapper(productId, price)
 
+        @JvmStatic
         infix fun String.mapping(price: String) = create(this, price)
     }
 }

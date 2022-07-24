@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
-import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
-import com.mmgsoft.modules.libs.utils.PREFS_CURRENT_BACKGROUND_SELECTED
 
 object BackgroundManager {
     private const val EXTRA_BACKGROUND_IMAGE = "EXTRA_BACKGROUND_IMAGE"
@@ -22,15 +20,17 @@ object BackgroundManager {
         val pkgCompare = customPackageName.ifBlank { application.packageName }
         val activitiesNonLoad = AdsComponentConfig.activitiesNonLoadBackground
         val loadBackgroundOn = AdsComponentConfig.loadBackgroundOn
-        application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
+        application.registerActivityLifecycleCallbacks(object :
+            Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                if(loadBackgroundOn == BackgroundLoadOn.ON_CREATED) {
+                if (loadBackgroundOn == BackgroundLoadOn.ON_CREATED) {
                     onLoadBackground(activitiesNonLoad, pkgCompare, activity)
                 }
             }
+
             override fun onActivityStarted(activity: Activity) {}
             override fun onActivityResumed(activity: Activity) {
-                if(loadBackgroundOn == BackgroundLoadOn.ON_RESUME) {
+                if (loadBackgroundOn == BackgroundLoadOn.ON_RESUME) {
                     onLoadBackground(activitiesNonLoad, pkgCompare, activity)
                 }
             }
@@ -49,21 +49,22 @@ object BackgroundManager {
         })
     }
 
-    private fun onLoadBackground(activitiesNonLoad: List<String>, pkgCompare: String, act: Activity) {
-        if(activitiesNonLoad.find { it.contains(act.localClassName) } == null) {
-            if(act.packageName.contains(pkgCompare)) {
+    private fun onLoadBackground(
+        activitiesNonLoad: List<String>,
+        pkgCompare: String,
+        act: Activity
+    ) {
+        if (activitiesNonLoad.find { it.contains(act.localClassName) } == null) {
+            if (act.packageName.contains(pkgCompare)) {
                 loadBackground(act)
             }
         }
     }
 
     private val adsPref by lazy {
-        AdsApplication.prefs
+        AdsComponents.INSTANCE.adsPrefs
     }
 
-    private val gson: Gson by lazy {
-        Gson()
-    }
 
     /**
      * biến để đăng ký thay đổi background khi người dùng thực hiện thay đổi
@@ -78,14 +79,15 @@ object BackgroundManager {
      * Thực hiện khi người dùng mua background
      */
     fun addWasPaidBackground(background: Background): Boolean {
-        return adsPref.addWasPaidBackground(background)
+        adsPref.wasPaidBackgrounds = getWasPaidBackgrounds().also { it.add(background) }
+        return true
     }
 
     /**
      * Lấy về danh sách backgrounds người dùng đã mua
      */
     fun getWasPaidBackgrounds(): MutableList<Background> {
-        return adsPref.getWasPaidBackgrounds()
+        return adsPref.wasPaidBackgrounds
     }
 
     /**
@@ -93,11 +95,12 @@ object BackgroundManager {
      * Khi người dùng không chọn, background sẽ = null
      */
     fun saveBackgroundSelected(background: Background?): Boolean {
-        return adsPref.putString(PREFS_CURRENT_BACKGROUND_SELECTED, gson.toJson(background)).apply {
-            background?.let {
-                observableOneBackground.postValue(background)
-            }
+        adsPref.selectedBackground = background
+
+        background?.let {
+            observableOneBackground.postValue(background)
         }
+        return true
     }
 
     /**
@@ -105,8 +108,7 @@ object BackgroundManager {
      * Khi người dùng không chọn, background sẽ = null
      */
     fun getBackgroundSelected(): Background? {
-        val backgroundString = adsPref.getString(PREFS_CURRENT_BACKGROUND_SELECTED)
-        return if(backgroundString.isBlank()) null else gson.fromJson(backgroundString, Background::class.java)
+        return adsPref.selectedBackground
     }
 
     /**
@@ -126,7 +128,7 @@ object BackgroundManager {
     private fun randomBackground(doWork: (Background) -> Unit) {
         val backgrounds = getWasPaidBackgrounds()
         val size = backgrounds.size
-        if(backgrounds.isNotEmpty()) {
+        if (backgrounds.isNotEmpty()) {
             doWork.invoke(backgrounds[random(size, size)])
         }
     }
@@ -163,6 +165,12 @@ object BackgroundManager {
                 imageView.setImageBitmap(it)
             }
         }
+
+/*        if (BuildConfig.DEBUG) {
+            AssetManager.loadBitmap("backgrounds/img_background_64.webp") {
+                imageView.setImageBitmap(it)
+            }
+        }*/
     }
 
     /**
@@ -172,11 +180,11 @@ object BackgroundManager {
     fun loadBackground(act: Activity) {
         val imageID = act.intent.getIntExtra(EXTRA_BACKGROUND_IMAGE, -1)
 
-        val imageView = if(imageID == -1) {
+        val imageView: ImageView? = if (imageID == -1) {
             createBackgroundViewAndAddToRoot(act, ImageView.ScaleType.CENTER_CROP)
         } else act.findViewById(imageID)
 
-        loadBackgroundToImageView(imageView)
+        imageView?.let { loadBackgroundToImageView(it) }
     }
 
     /**
@@ -187,7 +195,7 @@ object BackgroundManager {
     fun loadBackground(act: Activity, scaleType: ImageView.ScaleType) {
         val imageID = act.intent.getIntExtra(EXTRA_BACKGROUND_IMAGE, -1)
 
-        val imageView = if(imageID == -1) {
+        val imageView = if (imageID == -1) {
             createBackgroundViewAndAddToRoot(act, scaleType)
         } else act.findViewById(imageID)
 
@@ -199,10 +207,11 @@ object BackgroundManager {
      * @param st
      * Tạo ảnh, gán id và lưu vào intent của activity
      */
-    private fun createBackgroundViewAndAddToRoot(act: Activity, st: ImageView.ScaleType) = ImageView(act).apply {
-        id = View.generateViewId()
-        scaleType = st
-        act.intent.putExtra(EXTRA_BACKGROUND_IMAGE, id)
-        act.window.decorView.findViewById<ViewGroup>(android.R.id.content).addView(this, 0)
-    }
+    private fun createBackgroundViewAndAddToRoot(act: Activity, st: ImageView.ScaleType) =
+        ImageView(act).apply {
+            id = View.generateViewId()
+            scaleType = st
+            act.intent.putExtra(EXTRA_BACKGROUND_IMAGE, id)
+            act.window.decorView.findViewById<ViewGroup>(android.R.id.content).addView(this, 0)
+        }
 }

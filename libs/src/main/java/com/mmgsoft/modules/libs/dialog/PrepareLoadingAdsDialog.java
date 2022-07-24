@@ -9,6 +9,7 @@ import com.mmgsoft.modules.libs.R;
 public class PrepareLoadingAdsDialog extends Dialog {
     public PrepareLoadingAdsDialog(Context context) {
         super(context, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        setCancelable(false);
     }
 
     @Override

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
@@ -56,6 +57,7 @@
             android:background="#A6000000"
             android:clickable="true"
             android:focusable="true"
+            tools:visibility="visible"
             android:visibility="gone">
             <com.github.ybq.android.spinkit.SpinKitView
                 style="@style/SpinKitView.Large.FadingCircle"

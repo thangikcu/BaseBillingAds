@@ -1,5 +1,6 @@
 package com.mmgsoft.modules.libs.amzbiling
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -8,10 +9,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amazon.device.iap.PurchasingService
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.customview.SpacesItemDecoration
 import com.mmgsoft.modules.libs.helpers.AmazonScreenType
-import com.mmgsoft.modules.libs.utils.AdsComponentConfig.amazonProdId
 
 class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem> {
     private val imBack: AppCompatImageView by lazy {
@@ -27,7 +28,7 @@ class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem>
     }
 
     override val allSkus: Set<String>
-        get() = HashSet(amazonProdId)
+        get() = HashSet(AdsComponents.INSTANCE.billingId.toList())
 
     override val resLayout: Int
         get() = R.layout.purchase_product_layout
@@ -52,6 +53,7 @@ class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem>
         initRecycler()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun notifyUpdateListView() {
         mSkuAdapter.notifyDataSetChanged()
     }

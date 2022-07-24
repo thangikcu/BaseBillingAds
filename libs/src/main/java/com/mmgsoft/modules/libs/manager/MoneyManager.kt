@@ -1,18 +1,18 @@
 package com.mmgsoft.modules.libs.manager
 
-import com.mmgsoft.modules.libs.AdsApplication
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.etx.toCurrency
 import com.mmgsoft.modules.libs.helpers.AmazonCurrency
 import com.mmgsoft.modules.libs.helpers.BillingType
+import com.mmgsoft.modules.libs.helpers.PREFS_MONEY
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
-import com.mmgsoft.modules.libs.utils.PREFS_MONEY
 import java.text.NumberFormat
 import java.util.*
 
 object MoneyManager {
     private val prefs by lazy {
-        AdsApplication.prefs
+        AdsComponents.INSTANCE.adsPrefs
     }
 
     internal val amazonCurrencies = listOf(
@@ -59,32 +59,28 @@ object MoneyManager {
      * Lấy số tiền hiện tại
      */
     fun getCurrentGoldStr(): String {
-        val money = prefs.getDouble(PREFS_MONEY)
+        val money = prefs.money
         return "$money ${AdsComponentConfig.currency}"
-    }
-
-    /**
-     * Lấy số tiền hiện tại đang có
-     */
-    fun getCurrentGold(): Double {
-        return prefs.getDouble(PREFS_MONEY)
     }
 
     /**
      * Thực hiện cộng tiền khi billing thành công
      */
-    fun addMoney(money: String, rate: Double = AdsComponentConfig.exchangeRate): Boolean {
+    fun addMoney(money: String, rate: Double = AdsComponentConfig.exchangeRate) {
         val newMoney = exchange(money, rate)
-        return prefs.putDouble(PREFS_MONEY, newMoney + getCurrentGold())
+        prefs.money += newMoney
     }
 
     /**
      * Thực hiện trừ tiền khi mua backgrounds
      */
     fun buyBackground(background: Background): Boolean {
-        val currentGold = getCurrentGold()
+        val currentGold = prefs.money
         return if(currentGold < background.price.toDouble()) {
             false
-        } else prefs.putDouble(PREFS_MONEY, getCurrentGold() - background.price.toDouble())
+        } else {
+            prefs.money -=  background.price.toDouble()
+            return true
+        }
     }
 }

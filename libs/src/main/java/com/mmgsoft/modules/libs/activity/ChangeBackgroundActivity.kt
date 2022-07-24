@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
 import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
@@ -23,6 +24,7 @@ import com.mmgsoft.modules.libs.manager.BackgroundManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager.addWasPaidBackground
 import com.mmgsoft.modules.libs.manager.BackgroundManager.getWasPaidBackgrounds
 import com.mmgsoft.modules.libs.manager.MoneyManager
+import com.mmgsoft.modules.libs.manager.PurchaseManager
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.START_WITH_DESCRIPTION
@@ -193,7 +195,7 @@ class ChangeBackgroundActivity : BaseActivity() {
     private fun updateCurrentMoney() {
         val isShowBuy = backgroundMotion.currentState == R.id.end
 
-        tvGold.text = MoneyManager.getCurrentGold().toString()
+        tvGold.text = AdsComponents.INSTANCE.adsPrefs.money.toString()
         tvCurrency.text = AdsComponentConfig.currency
         tvBuyGold.text = "Buy ${AdsComponentConfig.currency}"
 
@@ -202,7 +204,7 @@ class ChangeBackgroundActivity : BaseActivity() {
     }
 
     private fun getBackgrounds() = AssetManager.loadListFilesOfAsset(
-        AdsComponentConfig.otherAppContext, AdsComponentConfig.assetsPath
+        this, AdsComponentConfig.assetsPath
     ).mapIndexed { index, s ->
         val p = index + 1
         Background(

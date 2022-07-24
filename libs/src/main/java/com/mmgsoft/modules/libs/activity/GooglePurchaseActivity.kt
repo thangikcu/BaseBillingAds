@@ -2,7 +2,6 @@ package com.mmgsoft.modules.libs.activity
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -10,12 +9,11 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.base.BaseActivity
-import com.mmgsoft.modules.libs.billing.BillingManager
+import com.mmgsoft.modules.libs.billing.GoogleBillingManager
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
 import com.mmgsoft.modules.libs.helpers.ActionBarTheme
@@ -27,7 +25,7 @@ import kotlinx.android.synthetic.main.view_purchase.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class PurchaseActivity : BaseActivity() {
+class GooglePurchaseActivity : BaseActivity() {
     private val tvTitle by lazy {
         findViewById<TextView>(R.id.tvPurchaseTitle)
     }
@@ -63,7 +61,7 @@ class PurchaseActivity : BaseActivity() {
                  @LayoutRes layoutSubs: Int,
                  @LayoutRes layoutInApp: Int,
                  headerTitle: String?) {
-            val i = Intent(ctx, PurchaseActivity::class.java)
+            val i = Intent(ctx, GooglePurchaseActivity::class.java)
             colorToolbar?.let { i.putExtra(EXTRAS_COLOR_TOOLBAR, it) }
             colorTitleToolbar?.let { i.putExtra(EXTRAS_COLOR_TITLE_TOOLBAR, it) }
             headerTitle?.let { i.putExtra(EXTRAS_HEADER_TITLE, it) }
@@ -124,17 +122,17 @@ class PurchaseActivity : BaseActivity() {
     }
 
     private fun observablePurchase() {
-        BillingManager.listAvailableObserver.observe(this, Observer {
+        GoogleBillingManager.listAvailableObserver.observe(this) {
             reInitPurchaseItems()
-            if(BillingManager.state == StateAfterBuy.REMOVE) {
+            if (GoogleBillingManager.state == StateAfterBuy.REMOVE) {
                 rvPurchase.postInvalidate()
             }
-        })
+        }
     }
 
     private fun reInitPurchaseItems() {
-        purchaseView.setup(BillingManager.listAvailable) { productDetails ->
-            BillingManager.launchBillingFlow(this@PurchaseActivity, productDetails)
+        purchaseView.setup(GoogleBillingManager.listAvailable) { productDetails ->
+            GoogleBillingManager.launchBillingFlow(this@GooglePurchaseActivity, productDetails)
         }
     }
 

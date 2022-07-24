@@ -1,0 +1,53 @@
+def APPLICATION_ID = "com.android.pro.scanner"
+
+def mKeyAlias = "als_${APPLICATION_ID}_keystore_release_product"
+def mKeyPassword = "${APPLICATION_ID}_keystore_release_product"
+def mStoreFile = "keystore/${APPLICATION_ID}_keystore_release_product.jks"
+def mStorePassword = "${APPLICATION_ID}_keystore_release_product"
+
+task generateKeystore() {
+    if (!file(mStoreFile).exists()) {
+        file('keystore').mkdir()
+
+        project.exec {
+            workingDir(rootDir)
+            executable = 'keytool'
+            def args = Arrays.asList(
+                    '-genkey',
+                    '-v',
+                    '-keystore', mStoreFile,
+                    '-alias', mKeyAlias,
+                    '-storepass', mStorePassword,
+                    '-keypass', mKeyPassword,
+                    '-dname', 'CN=Android Debug',
+                    '-keyalg', 'RSA',
+                    '-keysize', '2048',
+                    '-validity', '10000'
+            )
+            setArgs(args)
+        }
+    }
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn generateKeystore
+}
+
+android {
+    signingConfigs {
+        production {
+            keyAlias mKeyAlias
+            keyPassword mKeyPassword
+            storeFile file(mStoreFile)
+            storePassword mStorePassword
+        }
+    }
+
+    compileSdkVersion 32
+
+    defaultConfig {
+        applicationId APPLICATION_ID
+        archivesBaseName = APPLICATION_ID
+        signingConfig signingConfigs.production
+    }
+}

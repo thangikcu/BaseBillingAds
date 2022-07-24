@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.mmgsoft.modules.libs">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,7 +17,7 @@
 
     <application>
         <activity
-            android:name=".activity.PurchaseActivity"
+            android:name=".activity.GooglePurchaseActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
@@ -37,6 +38,11 @@
         </receiver>
         <service
             android:name="com.amazon.device.iap.PurchasingService"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="ExportedService" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/ADMOB_APP_ID"/>
     </application>
 </manifest>
