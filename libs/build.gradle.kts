@@ -6,6 +6,23 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
     id("kotlin-android-extensions")
+    id("maven-publish")
+}
+//group = "com.github.jitpack"
+//version = "2.0"
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "com.github.thangikcu"
+            artifactId = "aaaaaa"
+            version = "1.0"
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
 
 android {
