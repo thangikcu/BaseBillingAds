@@ -6,11 +6,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
     id("kotlin-android-extensions")
-    id("maven-publish")
+//    id("maven-publish")
 }
-//group = "com.github.jitpack"
-//version = "2.0"
-
+/*
 publishing {
     publications {
         register<MavenPublication>("release") {
@@ -23,7 +21,7 @@ publishing {
             }
         }
     }
-}
+}*/
 
 android {
     compileSdk = 32
