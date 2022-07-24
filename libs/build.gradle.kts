@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
     id("kotlin-android-extensions")
-//    id("maven-publish")
+    id("maven-publish")
 }
 /*
 publishing {
