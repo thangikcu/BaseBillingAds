@@ -2,7 +2,6 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.mmgsoft.modules.libs.activity.ChangeBackgroundActivity
 import com.mmgsoft.modules.libs.manager.PurchaseManager
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnChangeBackground.setOnClickListener {
-            ChangeBackgroundActivity.open(this)
+//            ChangeBackgroundActivity.open(this)
         }
     }
 }

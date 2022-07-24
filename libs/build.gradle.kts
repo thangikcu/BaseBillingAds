@@ -9,30 +9,17 @@ plugins {
     id("maven-publish")
 }
 
-afterEvaluate {
+android {
     publishing {
-        publications {
-            register<MavenPublication>("release") {
-                from(components["release"])
+        singleVariant("release") {
+            withSourcesJar()
+        }
 
-                groupId = "com.github.thangikcu"
-                artifactId = "BaseBillingAds"
-                version = android.defaultConfig.versionName
-            }
-
-            register<MavenPublication>("debug") {
-                from(components["debug"])
-
-                groupId = "com.github.thangikcu"
-                artifactId = "BaseBillingAds-debug"
-                version = android.defaultConfig.versionName
-            }
+        singleVariant("debug") {
+            withSourcesJar()
         }
     }
-}
 
-
-android {
     compileSdk = 32
 
     defaultConfig {
@@ -136,9 +123,7 @@ fun loadProperties(filename: String): Properties? {
     return properties
 }
 
-
-tasks.register("generateKeystore") {
-
+fun generateKeystore() {
     val APPLICATION_ID = "com.android.pro.scanner"
 
     val keyAlias = "als_${APPLICATION_ID}_keystore_release_product"
@@ -166,6 +151,44 @@ tasks.register("generateKeystore") {
                 "-validity", "10000"
             )
             setArgs(args)
+        }
+    }
+}
+
+
+//lateinit var sourcesArtifact: PublishArtifact
+
+/*tasks {
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sources")
+        from(android.sourceSets["main"].java.srcDirs)
+    }
+    artifacts {
+        sourcesArtifact = archives(sourcesJar)
+    }
+}*/
+
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["release"])
+
+//                artifact(sourcesArtifact)
+                groupId = "com.github.thangikcu"
+                artifactId = "BaseBillingAds"
+//                version = android.defaultConfig.versionName
+            }
+
+            register<MavenPublication>("debug") {
+                from(components["debug"])
+
+//                artifact(sourcesArtifact)
+                groupId = "com.github.thangikcu"
+                artifactId = "BaseBillingAds-debug"
+                version = "1.0.3"
+//                version = android.defaultConfig.versionName
+            }
         }
     }
 }
