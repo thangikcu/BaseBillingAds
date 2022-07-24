@@ -5,6 +5,7 @@ before_install:
 #  - sdk use java 11.0.16-open
 install:
   - echo "Running a custom install command"
+  - chmod +x gradlew
   - ./gradlew publishToMavenLocal
 env:
   MYVAR: "custom environment variable"
