@@ -8,20 +8,29 @@ plugins {
     id("kotlin-android-extensions")
     id("maven-publish")
 }
-/*
-publishing {
-    publications {
-        register<MavenPublication>("release") {
-            groupId = "com.github.thangikcu"
-            artifactId = "aaaaaa"
-            version = "1.0"
 
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
                 from(components["release"])
+
+                groupId = "com.github.thangikcu"
+                artifactId = "BaseBillingAds"
+                version = android.defaultConfig.versionName
+            }
+
+            register<MavenPublication>("debug") {
+                from(components["debug"])
+
+                groupId = "com.github.thangikcu"
+                artifactId = "BaseBillingAds-debug"
+                version = android.defaultConfig.versionName
             }
         }
     }
-}*/
+}
+
 
 android {
     compileSdk = 32
