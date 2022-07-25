@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            loadEnv(this, "./env/dev.properties")
+            loadEnv(this, "env/dev.properties")
         }
 
         release {
@@ -32,7 +32,7 @@ android {
                 "proguard-rules.pro"
             )
 
-            loadEnv(this, "./env/product.properties")
+            loadEnv(this, "env/product.properties")
         }
     }
 
@@ -43,6 +43,9 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 
     publishing {

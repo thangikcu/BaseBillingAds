@@ -14,7 +14,6 @@ import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
 import com.mmgsoft.modules.libs.helpers.AmazonScreenType
 import com.mmgsoft.modules.libs.manager.MoneyManager
-import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.DEFAULT_EXCHANGE_RATE_OTHER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +45,7 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
         super.onResume()
         PurchasingService.getUserData()
         PurchasingService.getPurchaseUpdates(true)
-        if(allProductSkus.isNotEmpty())
+        if (allProductSkus.isNotEmpty())
             PurchasingService.getProductData(allProductSkus.toSet())
     }
 
@@ -82,12 +81,12 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                             false else {
                             productItem.isBuy = skuUnavailables.contains(product.sku)
                         }
-                        if(screenType == AmazonScreenType.BUY_GOLD) {
-                            if(product.productType == ProductType.CONSUMABLE) {
+                        if (screenType == AmazonScreenType.BUY_GOLD) {
+                            if (product.productType == ProductType.CONSUMABLE) {
                                 productItems.add(productItem)
                             }
                         } else {
-                            if(product.productType == ProductType.ENTITLED || product.productType == ProductType.SUBSCRIPTION) {
+                            if (product.productType == ProductType.ENTITLED || product.productType == ProductType.SUBSCRIPTION) {
                                 productItems.add(productItem)
                             }
                         }
@@ -124,16 +123,16 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                             return@map
                         }
                     }
-                } else{
+                } else {
                     productItems.map { prodItem ->
-                        val sku = if(receipt.productType == ProductType.SUBSCRIPTION) {
+                        val sku = if (receipt.productType == ProductType.SUBSCRIPTION) {
                             receipt.termSku
                         } else receipt.sku
 
                         if (sku.contains(prodItem.sku)) {
                             if (prodItem.sku.contains(AdsComponents.INSTANCE.billingId.interstitial)) {
                                 AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial = true
-                            } else if(prodItem.sku.contains(AdsComponents.INSTANCE.billingId.banner)) {
+                            } else if (prodItem.sku.contains(AdsComponents.INSTANCE.billingId.banner)) {
                                 AdsComponents.INSTANCE.adsPrefs.isBillingAdmobBanner = true
                             } else checkOnAddMoney(receipt) {
                                 MoneyManager.addMoney(prodItem.price, DEFAULT_EXCHANGE_RATE_OTHER)
@@ -149,9 +148,12 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
     }
 
     private fun checkOnAddMoney(receipt: Receipt, onNonContains: () -> Unit) {
-        val skuId = if(receipt.productType == ProductType.SUBSCRIPTION) receipt.termSku else receipt.sku
-        AdsComponentConfig.billingMappers.find { skuId.uppercase().contains(it.productId.uppercase()) }?.let {
-            MoneyManager.addMoney(it.price, 1.0)
+        val skuId =
+            if (receipt.productType == ProductType.SUBSCRIPTION) receipt.termSku else receipt.sku
+        AdsComponents.INSTANCE.billingMappers.find {
+            skuId.uppercase().contains(it.productId.uppercase())
+        }?.let {
+            MoneyManager.addMoney(it.refundMoney, 1.0)
         } ?: onNonContains.invoke()
     }
 
@@ -185,7 +187,8 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     subscriptionModel.userId = currentUserId
                     subscriptionModel.sku = receipt.sku
                     subscriptionModel.receiptId = receipt.receiptId
-                    subscriptionModel.fromDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    subscriptionModel.fromDate =
+                        receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     subscriptionModel.toDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     productItems.find { receipt.termSku.contains(it.sku) }?.let { prodItem ->
                         prodItem.isBuy = true
@@ -199,8 +202,10 @@ abstract class BaseIapAmzActivity : AppCompatActivity(), PurchasingListener {
                     entitlementModel.userId = currentUserId
                     entitlementModel.sku = receipt.sku
                     entitlementModel.receiptId = receipt.receiptId
-                    entitlementModel.purchaseDate = receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
-                    entitlementModel.cancelDate = receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    entitlementModel.purchaseDate =
+                        receipt.purchaseDate?.time ?: DbHelper.TO_DATE_NOT_SET
+                    entitlementModel.cancelDate =
+                        receipt.cancelDate?.time ?: DbHelper.TO_DATE_NOT_SET
                     productItems.find { receipt.sku.contains(it.sku) }?.let { prodItem ->
                         prodItem.isBuy = true
                     }

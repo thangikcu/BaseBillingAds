@@ -10,20 +10,20 @@
     <queries>
         <package android:name="com.amazon.venezia" />
     </queries>
-    
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
 
     <application>
+
+
         <activity
             android:name=".activity.GooglePurchaseActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
         <activity
             android:name=".activity.ChangeBackgroundActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
         <activity
             android:name=".amzbiling.AmazonIapActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
@@ -36,6 +36,7 @@
                 <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="com.amazon.device.iap.PurchasingService"
             android:exported="true"
@@ -43,6 +44,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/ADMOB_APP_ID"/>
+            android:value="@string/ADMOB_APP_ID" />
     </application>
+
 </manifest>

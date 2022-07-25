@@ -24,9 +24,10 @@ object GoogleBillingManager {
     private val mProductInAppIds = mutableListOf<String>()
     private val mProductSubsIds = mutableListOf<String>()
     var onKnowledgeSuccess: (Purchase, BillingResult) -> Unit = { _: Purchase, _: BillingResult -> }
-    var onConsumeSuccess: (Purchase, BillingResult, String) -> Unit = { _: Purchase, _: BillingResult, _: String -> }
+    var onConsumeSuccess: (Purchase, BillingResult, String) -> Unit =
+        { _: Purchase, _: BillingResult, _: String -> }
     var listAvailable = mutableListOf<PurchaseProductDetails>()
-    val listAvailableObserver : MutableLiveData<MutableList<PurchaseProductDetails>> by lazy {
+    val listAvailableObserver: MutableLiveData<MutableList<PurchaseProductDetails>> by lazy {
         MutableLiveData<MutableList<PurchaseProductDetails>>(mutableListOf())
     }
     var validPurchases = HashSet<Purchase>()
@@ -88,10 +89,12 @@ object GoogleBillingManager {
     /**
      * Khởi tạo cho billingClient và set giá trị cho 2 thằng là SUBS và INAPP list
      */
-    fun init(context: Context,
-             productInAppIds: List<String>,
-             productSubsIds: List<String>,
-             state: StateAfterBuy = StateAfterBuy.DISABLE) {
+    fun init(
+        context: Context,
+        productInAppIds: List<String>,
+        productSubsIds: List<String>,
+        state: StateAfterBuy = StateAfterBuy.DISABLE
+    ) {
         this.state = state
         this.mProductInAppIds.clear()
         this.mProductInAppIds.addAll(productInAppIds)
@@ -119,7 +122,9 @@ object GoogleBillingManager {
             .setOfferToken(offerToken)
             .build()
         val productDetailsParamsList = listOf(billingFlowParams)
-        val params = BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList).build()
+        val params =
+            BillingFlowParams.newBuilder().setProductDetailsParamsList(productDetailsParamsList)
+                .build()
 
         taskExecutionRetryPolicy(mBillingClient, billingConnectListener) {
             Log.d(TAG, "launchBillingFlow()")
@@ -162,7 +167,7 @@ object GoogleBillingManager {
     private fun clearItemsWhenProdIds(productIds: List<String>) = scope.launch {
         productIds.map { productId ->
             val product = listAvailable.firstOrNull { it.productDetails.productId == productId }
-            if(state == StateAfterBuy.DISABLE) {
+            if (state == StateAfterBuy.DISABLE) {
                 product?.apply {
                     isBuy = true
                 }
@@ -182,11 +187,11 @@ object GoogleBillingManager {
 
     private fun checkIsBilling() {
         mAllProductDetails.map {
-            if(it.productId.contains(AdsComponents.INSTANCE.billingId.interstitial)) {
+            if (it.productId.contains(AdsComponents.INSTANCE.billingId.interstitial)) {
                 AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial = true
             }
 
-            if(it.productId.contains(AdsComponents.INSTANCE.billingId.banner)) {
+            if (it.productId.contains(AdsComponents.INSTANCE.billingId.banner)) {
                 AdsComponents.INSTANCE.adsPrefs.isBillingAdmobBanner = true
             }
         }
@@ -235,42 +240,48 @@ object GoogleBillingManager {
                  */
                 purchases?.map { purchase ->
                     purchase.products.map { productId ->
-                        if(productId.contains(AdsComponentConfig.consumeKey)) {
+                        if (productId.contains(AdsComponentConfig.consumeKey)) {
                             checkOnAddMoney(productId) {
-                                mAllProductDetails.find { it.productId == productId }?.let { productDetail ->
-                                    if(productDetail.productType == BillingClient.ProductType.INAPP) {
-                                        productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
-                                            MoneyManager.addMoney(money)
-                                        }
-                                    } else {
-                                        productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
-                                            MoneyManager.addMoney(money)
+                                mAllProductDetails.find { it.productId == productId }
+                                    ?.let { productDetail ->
+                                        if (productDetail.productType == BillingClient.ProductType.INAPP) {
+                                            productDetail.oneTimePurchaseOfferDetails?.formattedPrice?.let { money ->
+                                                MoneyManager.addMoney(money)
+                                            }
+                                        } else {
+                                            productDetail.subscriptionOfferDetails?.firstOrNull()?.pricingPhases?.pricingPhaseList?.firstOrNull()?.formattedPrice?.let { money ->
+                                                MoneyManager.addMoney(money)
+                                            }
                                         }
                                     }
-                                }
                             }
                         }
                     }
                 }
                 purchases?.apply { handlePurchases(this.toSet()) }
-                EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.SHOW_LOADING))
+                EventBus.getDefault()
+                    .postSticky(BillingLoadingStateEvent(BillingLoadingState.SHOW_LOADING))
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> {
-                EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+                EventBus.getDefault()
+                    .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
                 // Handle response cancel
             }
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 // item already owned? call queryPurchasesAsync to verify and process all such items
-                EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+                EventBus.getDefault()
+                    .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
                 Log.d(TAG, "onPurchasesUpdated(): ${billingResult.debugMessage}")
             }
             BillingClient.BillingResponseCode.SERVICE_DISCONNECTED -> {
-                EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+                EventBus.getDefault()
+                    .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
                 Log.d(TAG, "onPurchasesUpdated(): Service disconnected")
                 connectToGooglePlayBillingService()
             }
             else -> {
-                EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+                EventBus.getDefault()
+                    .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
                 Log.d(TAG, "onPurchasesUpdated(): ${billingResult.debugMessage}")
             }
         }
@@ -335,12 +346,19 @@ object GoogleBillingManager {
             .build()
 
         mBillingClient.consumeAsync(consumeParams) { billingResult, purchaseToken ->
-            EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+            EventBus.getDefault()
+                .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 clearItemsWhenProdIds(purchase.products)
-                Log.d(TAG, "AllowMultiplePurchases success, responseCode: ${billingResult.responseCode}")
+                Log.d(
+                    TAG,
+                    "AllowMultiplePurchases success, responseCode: ${billingResult.responseCode}"
+                )
             } else {
-                Log.d(TAG, "Can't allowMultiplePurchases, responseCode: ${billingResult.responseCode}")
+                Log.d(
+                    TAG,
+                    "Can't allowMultiplePurchases, responseCode: ${billingResult.responseCode}"
+                )
             }
             onConsumeSuccess.invoke(purchase, billingResult, purchaseToken)
         }
@@ -349,9 +367,11 @@ object GoogleBillingManager {
     private fun acknowledgePurchase(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             if (!purchase.isAcknowledged) {
-                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
+                val acknowledgePurchaseParams =
+                    AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken)
                 mBillingClient.acknowledgePurchase(acknowledgePurchaseParams.build()) {
-                    EventBus.getDefault().postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
+                    EventBus.getDefault()
+                        .postSticky(BillingLoadingStateEvent(BillingLoadingState.HIDE_LOADING))
                     // handle confirm purchase from the store success or not
                     Log.d("PURCHASE=====", "acknowledgePurchase")
                     clearItemsWhenProdIds(purchase.products)
@@ -378,7 +398,8 @@ object GoogleBillingManager {
     }
 
     private fun isSubscriptionSupported(): Boolean {
-        val billingResult = mBillingClient.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
+        val billingResult =
+            mBillingClient.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS)
         var iSupported = false
         when (billingResult.responseCode) {
             BillingClient.BillingResponseCode.OK -> iSupported = true
@@ -390,8 +411,10 @@ object GoogleBillingManager {
     }
 
     private fun checkOnAddMoney(prodID: String, onNonContains: () -> Unit) {
-        AdsComponentConfig.billingMappers.find { prodID.uppercase().contains(it.productId.uppercase()) }?.let {
-            MoneyManager.addMoney(it.price, 1.0)
+        AdsComponents.INSTANCE.billingMappers.find {
+            prodID.uppercase().contains(it.productId.uppercase())
+        }?.let {
+            MoneyManager.addMoney(it.refundMoney, 1.0)
         } ?: onNonContains.invoke()
     }
 

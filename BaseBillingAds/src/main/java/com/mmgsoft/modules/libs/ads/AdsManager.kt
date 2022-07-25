@@ -18,6 +18,10 @@ import com.mmgsoft.modules.libs.dialog.PrepareLoadingAdsDialog
 import com.mmgsoft.modules.libs.etx.gone
 import com.mmgsoft.modules.libs.etx.visible
 import com.mmgsoft.modules.libs.utils.NetworkUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AdsManager {
     var currentClicked = 0
@@ -39,7 +43,10 @@ class AdsManager {
     }
 
     private fun showInterstitialWithCount(act: Activity, closeAd: () -> Unit) {
-        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial || !NetworkUtils.isNetworkAvailable(act)) {
+        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial || !NetworkUtils.isNetworkAvailable(
+                act
+            )
+        ) {
             closeAd.invoke()
             return
         }
@@ -61,12 +68,28 @@ class AdsManager {
 
     @JvmOverloads
     fun forceShowInterstitial(act: Activity, adClosed: (() -> Unit)? = null) {
-        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial || !NetworkUtils.isNetworkAvailable(act)) {
+        if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial
+            || !NetworkUtils.isNetworkAvailable(act)
+        ) {
             adClosed?.invoke()
             return
         }
+
         val dialog = createDialogFullScreen(act)
         dialog.show()
+
+        var isTimeout = false
+        var loadSuccess = false
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(5000)
+
+            if (!loadSuccess) {
+                isTimeout = true
+                adClosed?.invoke()
+                dialog.dismiss()
+            }
+        }
 
         InterstitialAd.load(
             act,
@@ -75,20 +98,26 @@ class AdsManager {
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
-                    dialog.dismiss()
-                    adClosed?.invoke()
+                    loadSuccess = true
+                    if (!isTimeout) {
+                        dialog.dismiss()
+                        adClosed?.invoke()
+                    }
                 }
 
                 override fun onAdLoaded(p0: InterstitialAd) {
                     super.onAdLoaded(p0)
-                    p0.fullScreenContentCallback = object : FullScreenContentCallback() {
-                        override fun onAdDismissedFullScreenContent() {
-                            super.onAdDismissedFullScreenContent()
-                            dialog.dismiss()
-                            adClosed?.invoke()
+                    loadSuccess = true
+                    if (!isTimeout) {
+                        p0.fullScreenContentCallback = object : FullScreenContentCallback() {
+                            override fun onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent()
+                                dialog.dismiss()
+                                adClosed?.invoke()
+                            }
                         }
+                        p0.show(act)
                     }
-                    p0.show(act)
                 }
             })
     }

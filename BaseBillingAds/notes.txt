@@ -1,3 +1,20 @@
+   git clone -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
+
+    <activity
+            android:name="com.mmgsoft.modules.libs.activity.SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/Theme.App.Fullscreen">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
 def APPLICATION_ID = "com.android.pro.scanner"
 
 def mKeyAlias = "als_${APPLICATION_ID}_keystore_release_product"
