@@ -49,7 +49,7 @@ class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem>
         )
 
     override fun initData() {
-        imBack.setOnClickListener { v: View? -> super.onBackPressed() }
+        imBack.setOnClickListener { super.onBackPressed() }
         initRecycler()
     }
 

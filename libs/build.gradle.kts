@@ -10,15 +10,6 @@ plugins {
 }
 
 android {
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-
-        singleVariant("debug") {
-            withSourcesJar()
-        }
-    }
 
     compileSdk = 32
 
@@ -52,6 +43,30 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+
+        singleVariant("debug") {
+            withSourcesJar()
+        }
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            register<MavenPublication>("release") {
+                from(components["release"])
+            }
+
+            register<MavenPublication>("debug") {
+                from(components["debug"])
+            }
+        }
     }
 }
 
@@ -151,44 +166,6 @@ fun generateKeystore() {
                 "-validity", "10000"
             )
             setArgs(args)
-        }
-    }
-}
-
-
-//lateinit var sourcesArtifact: PublishArtifact
-
-/*tasks {
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-        from(android.sourceSets["main"].java.srcDirs)
-    }
-    artifacts {
-        sourcesArtifact = archives(sourcesJar)
-    }
-}*/
-
-afterEvaluate {
-    publishing {
-        publications {
-            register<MavenPublication>("release") {
-                from(components["release"])
-
-//                artifact(sourcesArtifact)
-                groupId = "com.github.thangikcu"
-                artifactId = "BaseBillingAds"
-//                version = android.defaultConfig.versionName
-            }
-
-            register<MavenPublication>("debug") {
-                from(components["debug"])
-
-//                artifact(sourcesArtifact)
-                groupId = "com.github.thangikcu"
-                artifactId = "BaseBillingAds-debug"
-                version = "1.0.3"
-//                version = android.defaultConfig.versionName
-            }
         }
     }
 }

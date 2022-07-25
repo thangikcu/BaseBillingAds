@@ -14,7 +14,7 @@ import com.mmgsoft.modules.libs.data.model.db.User;
 /**
  * Created by KhoaND32 on 9/6/20.
  */
-@Database(entities = {User.class, EntitlementModel.class, SubscriptionModel.class}, version = 1)
+@Database(entities = {User.class, EntitlementModel.class, SubscriptionModel.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
