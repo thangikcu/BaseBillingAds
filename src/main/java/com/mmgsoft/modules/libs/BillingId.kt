@@ -37,7 +37,7 @@ sealed class BillingId(
     ) {
         override fun toString(): String {
             return buildString {
-                appendLine(super.toString())
+                append(super.toString())
                 appendLine("NONE_CONSUME1: $noneConsume1")
             }
         }
@@ -60,7 +60,7 @@ sealed class BillingId(
 
         override fun toString(): String {
             return buildString {
-                appendLine(super.toString())
+                append(super.toString())
                 appendLine("ENTITLE_DISCOUNT1: $entitleDiscount1")
             }
         }

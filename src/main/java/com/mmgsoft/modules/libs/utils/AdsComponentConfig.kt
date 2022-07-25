@@ -4,7 +4,6 @@ import com.mmgsoft.modules.libs.helpers.AmazonCurrency
 import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.manager.MoneyManager
-import com.mmgsoft.modules.libs.models.BillingMapper
 
 const val DEFAULT_CURRENCY = "GOLD"
 const val DEFAULT_EXCHANGE_RATE = 1.2
@@ -14,9 +13,7 @@ const val DEFAULT_ASSETS_PATH = "backgrounds"
 const val ADS_PREFS_NAME = "ADS_PREFS_NAME"
 const val START_WITH_PRODUCT_ID = "item_"
 const val START_WITH_DESCRIPTION = "background "
-const val BILLING_MAPPER_KEY_1 = ""
-const val BILLING_MAPPER_KEY_2 = ""
-const val BILLING_MAPPER_KEY_3 = ""
+
 object AdsComponentConfig {
     internal var packageNameLoadBackground = ""
     internal val activitiesNonLoadBackground = mutableListOf<String>()
@@ -29,11 +26,7 @@ object AdsComponentConfig {
     internal var billingType = BillingType.GOOGLE
     internal var loadBackgroundOn = BackgroundLoadOn.ON_RESUME
     internal val backgroundPrices = mutableListOf<String>()
-    internal val billingMappers = mutableListOf(
-        BillingMapper(BILLING_MAPPER_KEY_1, "US$5000"),
-        BillingMapper(BILLING_MAPPER_KEY_2, "US$10000"),
-        BillingMapper(BILLING_MAPPER_KEY_3, "US$15000"),
-    )
+    internal val refundMoneys = mutableListOf<String>()
 
     /**
      * Cập nhật loại Billing
@@ -62,7 +55,6 @@ object AdsComponentConfig {
         this.exchangeRate = newExchangeRate
         return this
     }
-
 
 
     /**
@@ -99,25 +91,25 @@ object AdsComponentConfig {
     /**
      * Fix số tiền cộng vào sau khi thanh toán các gói
      */
-    fun setBillingMapper(mappers: List<BillingMapper>): AdsComponentConfig {
-        this.billingMappers.clear()
-        this.billingMappers.addAll(mappers.map(::standardizedData))
+    fun setRefundMoneys(refunds: List<String>): AdsComponentConfig {
+        this.refundMoneys.clear()
+        this.refundMoneys.addAll(refunds.map(::standardizedData))
         return this
     }
 
     /**
      * Fix số tiền cộng vào sau khi thanh toán các gói
-     * @param mappers
+     * @param refundArgs
      */
-    fun setBillingMapper(vararg mappers: BillingMapper): AdsComponentConfig {
-        setBillingMapper(mappers.toMutableList())
+    fun setRefundMoneys(vararg refundArgs: String): AdsComponentConfig {
+        setRefundMoneys(refundArgs.toMutableList())
         return this
     }
 
     /**
      * @param packageName: PackageName so sánh để load background
      */
-    fun updatePackageNameLoadBackground(packageName: String): AdsComponentConfig{
+    fun updatePackageNameLoadBackground(packageName: String): AdsComponentConfig {
         this.packageNameLoadBackground = packageName
         return this
     }
@@ -141,23 +133,22 @@ object AdsComponentConfig {
 
     /**
      * @version: 0.1.5
-     * @param billingMapper Là dữ liệu chưa được chuẩn hóa
+     * @param money Là dữ liệu chưa được chuẩn hóa
      * @return Dữ liệu đã được chuẩn hóa số tiền nhận sau
      *          khi được chỉnh sửa từ danh sách {@link AdsComponentConfig#updateBillingMapper}
      */
-    private fun standardizedData(billingMapper: BillingMapper): BillingMapper {
+    private fun standardizedData(money: String): String {
         var isNotStandardized = true
-        var price = billingMapper.price
+        @Suppress("NAME_SHADOWING") var money = money
         MoneyManager.amazonCurrencies.map {
-            if(price.contains(it.symbol)) {
+            if (money.contains(it.symbol)) {
                 isNotStandardized = false
                 return@map
             }
         }
-        if(isNotStandardized) {
-            price = "${AmazonCurrency.US.c}$price"
-            billingMapper.price = price
+        if (isNotStandardized) {
+            money = "${AmazonCurrency.US.c}$money"
         }
-        return billingMapper
+        return money
     }
 }

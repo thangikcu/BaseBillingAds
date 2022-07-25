@@ -2,7 +2,7 @@ package com.mmgsoft.modules.libs.models
 
 data class BillingMapper(
     val productId: String,
-    var price: String
+    var refundMoney: String
 ) {
     companion object {
         fun create(productId: String, price: String) =
