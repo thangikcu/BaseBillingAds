@@ -48,7 +48,7 @@ android {
 
 
 dependencies {
-    implementation(project(mapOf("path" to ":libs")))
+    implementation(project(mapOf("path" to ":BaseBillingAds")))
 
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.2")

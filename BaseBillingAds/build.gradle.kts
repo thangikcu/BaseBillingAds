@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         debug {
-            loadEnv(this, "env/dev.properties")
+            loadEnv(this, "./env/dev.properties")
         }
 
         release {
@@ -32,7 +32,7 @@ android {
                 "proguard-rules.pro"
             )
 
-            loadEnv(this, "env/product.properties")
+            loadEnv(this, "./env/product.properties")
         }
     }
 
@@ -124,7 +124,7 @@ fun loadEnv(target: LibraryBuildType, envFile: String) {
 }
 
 fun loadProperties(filename: String): Properties? {
-    val file = project.rootProject.file(filename)
+    val file = file(filename)
     var properties: Properties? = null
 
     if (file.exists()) {
