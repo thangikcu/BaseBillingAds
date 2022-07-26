@@ -43,6 +43,11 @@ task generateKeystore() {
             )
             setArgs(args)
         }
+
+        project.exec {
+            workingDir(projectDir)
+            commandLine 'git', 'add', mStoreFile
+        }
     }
 }
 
