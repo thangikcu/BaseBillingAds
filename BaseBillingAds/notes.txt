@@ -1,7 +1,7 @@
-   git clone -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
+git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
 
     <activity
-            android:name="com.mmgsoft.modules.libs.activity.SplashActivity"
+            android:name="com.mmgsoft.modules.libs.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:parentActivityName=".activity.MainActivity"
@@ -43,11 +43,6 @@ task generateKeystore() {
             )
             setArgs(args)
         }
-
-        project.exec {
-            workingDir(projectDir)
-            commandLine 'git', 'add', mStoreFile
-        }
     }
 }
 
@@ -73,3 +68,7 @@ android {
         signingConfig signingConfigs.production
     }
 }
+
+
+git update-index --skip-worktree secret.properties
+git update-index --no-skip-worktree secret.properties

@@ -18,7 +18,7 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
 		this.mItemClickListener = itemClickListener;
 	}
 	protected T mModel;
-	protected BaseRecyclerAdapter mAdapter;
+	protected BaseRecyclerAdapter<T> mAdapter;
 
 	public BaseRecyclerViewHolder(View itemView) {
 		super(itemView);
@@ -32,10 +32,10 @@ public abstract class BaseRecyclerViewHolder<T> extends RecyclerView.ViewHolder 
 		this.mModel = mModel;
 	}
 
-	public BaseRecyclerAdapter getmAdapter() {
+	public BaseRecyclerAdapter<T> getmAdapter() {
 		return mAdapter;
 	}
-	public void setmAdapter(BaseRecyclerAdapter mAdapter){
+	public void setmAdapter(BaseRecyclerAdapter<T> mAdapter){
 		this.mAdapter = mAdapter;
 	}
 

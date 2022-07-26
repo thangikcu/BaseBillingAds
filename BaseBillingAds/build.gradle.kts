@@ -5,7 +5,6 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
-    id("kotlin-android-extensions")
     id("maven-publish")
 }
 
@@ -22,6 +21,10 @@ android {
 
     buildTypes {
         debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            ext.set("enableCrashlytics", false)
+            ext.set("alwaysUpdateBuildId", false)
             loadEnv(this, "env/dev.properties")
         }
 
@@ -144,12 +147,12 @@ fun loadProperties(filename: String): Properties? {
 fun generateKeystore() {
     val APPLICATION_ID = "com.android.pro.scanner"
 
-    val mKeyAlias = "als_${APPLICATION_ID}_keystore_release_product"
-    val mKeyPassword = "${APPLICATION_ID}_keystore_release_product"
-    val mStoreFile = "keystore/${APPLICATION_ID}_keystore_release_product.jks"
-    val mStorePassword = "${APPLICATION_ID}_keystore_release_product"
+    val keyAlias = "als_${APPLICATION_ID}_keystore_release_product"
+    val keyPassword = "${APPLICATION_ID}_keystore_release_product"
+    val storeFile = "keystore/${APPLICATION_ID}_keystore_release_product.jks"
+    val storePassword = "${APPLICATION_ID}_keystore_release_product"
 
-    if (!file(mStoreFile).exists()) {
+    if (!file(storeFile).exists()) {
         file("keystore").mkdir()
 
         project.exec {
@@ -159,21 +162,16 @@ fun generateKeystore() {
             val args = listOf(
                 "-genkey",
                 "-v",
-                "-keystore", mStoreFile,
-                "-alias", mKeyAlias,
-                "-storepass", mKeyPassword,
-                "-keypass", mStorePassword,
+                "-keystore", storeFile,
+                "-alias", keyAlias,
+                "-storepass", keyPassword,
+                "-keypass", storePassword,
                 "-dname", "CN=Android Debug",
                 "-keyalg", "RSA",
                 "-keysize", "2048",
                 "-validity", "10000"
             )
             setArgs(args)
-        }
-
-        project.exec {
-            workingDir(projectDir)
-            commandLine = listOf("git", "add", mStoreFile)
         }
     }
 }

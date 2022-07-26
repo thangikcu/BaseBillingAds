@@ -1,25 +1,19 @@
 package com.mmgsoft.modules.libs.adapters
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.graphics.BitmapCompat
-import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleCoroutineScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.card.MaterialCardView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.base.BaseAdapterAutoViewHolder
+import com.mmgsoft.modules.libs.databinding.ItemBackgroundBinding
 import com.mmgsoft.modules.libs.etx.afterMeasured
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.models.Background
-import kotlinx.android.synthetic.main.item_background.view.*
 import kotlinx.coroutines.*
-import java.util.concurrent.Executors
 
 const val UPDATE_WAS_PAID = "UPDATE_WAS_PAID"
 
@@ -61,22 +55,23 @@ class BackgroundAdapter(
 
     override fun onBindView(itemView: View, item: Background, position: Int) {
         itemView.apply {
+            val binding = ItemBackgroundBinding.bind(itemView)
 
             item.bm?.let {
                 visibleAndLoadImage(this, it)
             } ?: run {
-                progress.visibility = View.VISIBLE
-                imBackground.visibility = View.INVISIBLE
+                binding.progress.visibility = View.VISIBLE
+                binding.imBackground.visibility = View.INVISIBLE
                 if (item.isTriggerLoadBitmap) {
                     return@run
                 }
                 item.isTriggerLoadBitmap = true
-                imBackground.afterMeasured {
+                binding.imBackground.afterMeasured {
                     lifecycleScope.launch(Dispatchers.IO) {
                         val bitmap = AssetManager.loadBitmap(
                             item.backgroundPath,
-                            imBackground.width,
-                            imBackground.height
+                            binding.imBackground.width,
+                            binding.imBackground.height
                         )
                         if (bitmap != null) {
                             item.bm = bitmap

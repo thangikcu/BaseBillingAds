@@ -10,7 +10,6 @@ import com.android.billingclient.api.ProductDetails
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.PurchaseAdapter
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
-import kotlinx.android.synthetic.main.view_purchase.view.*
 
 class PurchaseView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
     private val rvPurchase by lazy {

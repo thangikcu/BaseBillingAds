@@ -25,7 +25,7 @@ public class ProductSkuAdapter extends BaseRecyclerAdapter<ProductItem> {
     }
 
     @Override
-    public BaseRecyclerViewHolder getViewHolder(View view) {
+    public BaseRecyclerViewHolder<ProductItem> getViewHolder(View view) {
         return new ProductSkuViewHolder(view);
     }
 }

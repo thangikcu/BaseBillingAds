@@ -6,6 +6,6 @@
     android:background="?attr/fullscreenBackgroundColor"
     android:theme="@style/ThemeOverlay.App.FullscreenContainer"
     android:id="@+id/fullscreen_content"
-    tools:context=".activity.SplashActivity">
+    tools:context=".EntryActivity">
 
 </FrameLayout>

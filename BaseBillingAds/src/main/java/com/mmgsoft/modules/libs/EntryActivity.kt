@@ -1,4 +1,4 @@
-package com.mmgsoft.modules.libs.activity
+package com.mmgsoft.modules.libs
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -6,14 +6,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
-import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.databinding.ActivitySplashLayoutBinding
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig.setBillingType
 
 
 @SuppressLint("CustomSplashScreen")
-class SplashActivity : AppCompatActivity() {
+class EntryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashLayoutBinding
     private lateinit var fullscreenContent: View
@@ -27,15 +26,17 @@ class SplashActivity : AppCompatActivity() {
                 .setRefundMoneys("3000", "5000", "7000", "13000")
         )
 
+        AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
+            startActivity(supportParentActivityIntent)
+            finish()
+        }
+
         /**
          * Log thông tin BILLING chỉ với DEBUG mode
          */
         AdsComponents.INSTANCE.logDebugBillingInfo()
 
-        AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
-            startActivity(supportParentActivityIntent)
-            finish()
-        }
+
 
         binding = ActivitySplashLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)

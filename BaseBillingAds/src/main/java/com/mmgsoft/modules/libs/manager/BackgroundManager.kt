@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.MutableLiveData
 import com.mmgsoft.modules.libs.AdsComponents
+import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
@@ -166,11 +167,14 @@ object BackgroundManager {
             }
         }
 
-/*        if (BuildConfig.DEBUG) {
+        /**
+         * Just for Debug to ensure background Image show on the Activity
+         */
+        if (BuildConfig.DEBUG) {
             AssetManager.loadBitmap("backgrounds/img_background_64.webp") {
                 imageView.setImageBitmap(it)
             }
-        }*/
+        }
     }
 
     /**

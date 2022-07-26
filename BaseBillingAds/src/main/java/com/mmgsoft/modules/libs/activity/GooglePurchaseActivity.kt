@@ -11,6 +11,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.base.BaseActivity
 import com.mmgsoft.modules.libs.billing.GoogleBillingManager
@@ -21,7 +22,6 @@ import com.mmgsoft.modules.libs.helpers.BillingLoadingState
 import com.mmgsoft.modules.libs.helpers.BillingLoadingStateEvent
 import com.mmgsoft.modules.libs.helpers.StateAfterBuy
 import com.mmgsoft.modules.libs.widgets.PurchaseView
-import kotlinx.android.synthetic.main.view_purchase.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -44,6 +44,10 @@ class GooglePurchaseActivity : BaseActivity() {
 
     private val frBillingLoading by lazy {
         findViewById<FrameLayout>(R.id.frBillingLoading)
+    }
+
+    private val rvPurchase by lazy {
+        findViewById<RecyclerView>(R.id.rvPurchase)
     }
 
     companion object {
