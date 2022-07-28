@@ -17,7 +17,7 @@ class BillingAdsMenuProvider(private val activity: Activity) : MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
             R.id.action_purchase -> {
-                PurchaseManager.open(activity)
+                PurchaseManager.purchase(activity)
                 true
             }
             R.id.action_background -> {

@@ -138,7 +138,7 @@ class ChangeBackgroundActivity : BaseActivity() {
         }
 
         lnBound.setOnClickListener {
-            AmazonIapActivity.open(this, AmazonScreenType.BUY_GOLD)
+            PurchaseManager.purchaseWithRefund(this)
         }
 
         updateCurrentMoney()
