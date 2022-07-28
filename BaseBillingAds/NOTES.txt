@@ -1,9 +1,10 @@
 
 <activity
-    android:name="com.mmgsoft.modules.libs.SplashActivity"
+    android:name="com.mmgsoft.modules.libs.EntryActivity"
     android:exported="true"
     android:screenOrientation="portrait"
     android:parentActivityName=".activity.MainActivity"
+    tools:ignore="LockedOrientationActivity"
     android:theme="@style/Theme.App.Fullscreen">
 
     <intent-filter>
