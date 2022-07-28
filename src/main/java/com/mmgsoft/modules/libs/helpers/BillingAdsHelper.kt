@@ -1,20 +1,20 @@
 package com.mmgsoft.modules.libs.helpers
 
-import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.mmgsoft.modules.libs.R
+import com.mmgsoft.modules.libs.customview.BillingAdsToolbar
 import com.mmgsoft.modules.libs.widgets.BannerAds
 
 object BillingAdsHelper {
 
-    fun provideMenu(activity: ComponentActivity) {
+    @JvmOverloads
+    fun inject(activity: AppCompatActivity, addToolbar: Boolean = true) {
         activity.addMenuProvider(BillingAdsMenuProvider(activity))
-    }
 
-    fun showBannerAds(activity: Activity) {
         val contentView: View = activity.window.decorView.findViewById(android.R.id.content)
 
         val viewParent = contentView.parent as ViewGroup
@@ -27,6 +27,23 @@ object BillingAdsHelper {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
+
+        val toolbarId = View.generateViewId()
+        if (addToolbar) {
+            val toolbar = BillingAdsToolbar(activity)
+            toolbar.id = toolbarId
+            toolbar.layoutParams =
+                ConstraintLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topToTop = ConstraintSet.PARENT_ID
+                    startToStart = ConstraintSet.PARENT_ID
+                }
+            constraintLayout.addView(toolbar)
+            activity.setSupportActionBar(toolbar.findViewById(R.id.toolbar))
+        }
+
         val bannerAds = BannerAds(activity)
         bannerAds.id = View.generateViewId()
         bannerAds.layoutParams =
@@ -43,13 +60,18 @@ object BillingAdsHelper {
             ConstraintLayout.LayoutParams.MATCH_PARENT,
             0
         ).apply {
-            topToTop = ConstraintSet.PARENT_ID
-            startToStart = ConstraintSet.PARENT_ID
+            if (addToolbar) {
+                topToBottom = toolbarId
+            } else {
+                topToTop = ConstraintSet.PARENT_ID
+            }
             bottomToTop = bannerAds.id
         }
         constraintLayout.addView(contentView)
+
         viewParent.addView(constraintLayout, index)
         constraintLayout.requestLayout()
         bannerAds.load()
     }
+
 }

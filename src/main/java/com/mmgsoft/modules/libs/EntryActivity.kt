@@ -29,8 +29,10 @@ class EntryActivity : AppCompatActivity() {
 
         AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
             startActivity(supportParentActivityIntent)
+//            overridePendingTransition(0, 0)
             finish()
         }
+
 
         /**
          * Log thông tin BILLING chỉ với DEBUG mode
