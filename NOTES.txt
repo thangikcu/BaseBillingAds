@@ -1,0 +1,20 @@
+
+<activity
+    android:name="com.mmgsoft.modules.libs.SplashActivity"
+    android:exported="true"
+    android:screenOrientation="portrait"
+    android:parentActivityName=".activity.MainActivity"
+    android:theme="@style/Theme.App.Fullscreen">
+
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+
+
+git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
+
+git update-index --skip-worktree secret.properties
+git update-index --no-skip-worktree secret.properties

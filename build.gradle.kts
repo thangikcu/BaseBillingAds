@@ -5,7 +5,6 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
-    id("kotlin-android-extensions")
     id("maven-publish")
 }
 
@@ -22,6 +21,10 @@ android {
 
     buildTypes {
         debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            ext.set("enableCrashlytics", false)
+            ext.set("alwaysUpdateBuildId", false)
             loadEnv(this, "env/dev.properties")
         }
 
@@ -76,6 +79,7 @@ afterEvaluate {
 dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.4.2")
+    implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("com.google.android.material:material:1.6.1")
 
     implementation("com.google.android.gms:play-services-ads:21.1.0")
@@ -86,7 +90,6 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.android.billingclient:billing-ktx:5.0.0")
     implementation("com.android.billingclient:billing:5.0.0")
-    implementation("androidx.core:core-ktx:1.8.0")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.greenrobot:eventbus:3.3.1")
@@ -95,7 +98,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.annotation:annotation:1.4.0")
 //    implementation ("com.amazon.device:amazon-appstore-sdk:3.0.2")
 
@@ -123,6 +126,12 @@ fun loadEnv(target: LibraryBuildType, envFile: String) {
     envProperties.getProperty("INTERSTITIAL_AD_UNIT_ID").let {
         target.resValue("string", "INTERSTITIAL_AD_UNIT_ID", it)
         target.buildConfigField("String", "INTERSTITIAL_AD_UNIT_ID", it)
+    }
+    envProperties.getProperty("BILLING_TYPE").let {
+        target.buildConfigField("com.mmgsoft.modules.libs.helpers.BillingType", "BILLING_TYPE", it)
+    }
+    envProperties.getProperty("REFUND_MONEY").let {
+        target.buildConfigField("String[]", "REFUND_MONEY", it)
     }
 }
 
@@ -153,8 +162,6 @@ fun generateKeystore() {
         file("keystore").mkdir()
 
         project.exec {
-            isIgnoreExitValue = true
-            workingDir(projectDir)
             executable = "keytool"
             val args = listOf(
                 "-genkey",

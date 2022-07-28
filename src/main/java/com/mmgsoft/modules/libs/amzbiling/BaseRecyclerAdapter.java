@@ -1,9 +1,11 @@
 package com.mmgsoft.modules.libs.amzbiling;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
  * dangkhoait1989@gmail.com
  */
 
-public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder> {
+public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRecyclerViewHolder<T>> {
 	OnItemClickListener<T> mItemClickListener;
 	public BaseRecyclerAdapter(OnItemClickListener<T> itemClickListener){
 		this.mItemClickListener = itemClickListener;
@@ -24,18 +26,19 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 
 	public abstract int getItemLayoutResource(int viewType);
 
-	public abstract BaseRecyclerViewHolder getViewHolder(View view);
+	public abstract BaseRecyclerViewHolder<T> getViewHolder(View view);
 
+	@NonNull
 	@Override
-	public BaseRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	public BaseRecyclerViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(parent.getContext()).inflate(getItemLayoutResource(viewType), parent, false);
-		BaseRecyclerViewHolder vh = getViewHolder(view);
+		BaseRecyclerViewHolder<T> vh = getViewHolder(view);
 		vh.setmItemClickListener(mItemClickListener);
 		return vh;
 	}
 
 	@Override
-	public void onBindViewHolder(BaseRecyclerViewHolder holder, int position) {
+	public void onBindViewHolder(@NonNull BaseRecyclerViewHolder<T> holder, int position) {
 
 		if (mListItems.size() > 0 && position < mListItems.size())
 			holder.setmModel(mListItems.get(position));
@@ -53,6 +56,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 		return mListItems.size();
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void resetAllData(List<T> list) {
 		if (list == null)
 			return;
@@ -61,6 +65,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 		notifyDataSetChanged();
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void addAllData(List<T> list) {
 		if (list == null)
 			return;
@@ -68,6 +73,7 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter<BaseRe
 		notifyDataSetChanged();
 	}
 
+	@SuppressLint("NotifyDataSetChanged")
 	public void updateAllData(List<T> list) {
 		if (list == null)
 			return;
