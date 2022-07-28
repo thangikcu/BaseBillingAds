@@ -91,20 +91,12 @@ object AdsComponentConfig {
     /**
      * Fix số tiền cộng vào sau khi thanh toán các gói
      */
-    fun setRefundMoneys(refunds: List<String>): AdsComponentConfig {
+    fun setRefundMoneys(refunds: Array<String>): AdsComponentConfig {
         this.refundMoneys.clear()
         this.refundMoneys.addAll(refunds.map(::standardizedData))
         return this
     }
 
-    /**
-     * Fix số tiền cộng vào sau khi thanh toán các gói
-     * @param refundArgs
-     */
-    fun setRefundMoneys(vararg refundArgs: String): AdsComponentConfig {
-        setRefundMoneys(refundArgs.toMutableList())
-        return this
-    }
 
     /**
      * @param packageName: PackageName so sánh để load background

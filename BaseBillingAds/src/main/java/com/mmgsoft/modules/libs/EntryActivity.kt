@@ -23,8 +23,8 @@ class EntryActivity : AppCompatActivity() {
 
         AdsComponents.initialize(
             application,
-            setBillingType(BillingType.GOOGLE)
-                .setRefundMoneys("3000", "5000", "7000", "13000")
+            setBillingType(BuildConfig.BILLING_TYPE)
+                .setRefundMoneys(BuildConfig.REFUND_MONEY)
         )
 
         AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
