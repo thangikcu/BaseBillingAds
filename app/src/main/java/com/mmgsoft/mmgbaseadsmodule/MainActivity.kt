@@ -2,6 +2,7 @@ package com.mmgsoft.mmgbaseadsmodule
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.mmgsoft.modules.libs.activity.ChangeBackgroundActivity
 import com.mmgsoft.modules.libs.manager.PurchaseManager
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -11,11 +12,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         btnBuyItem1.setOnClickListener {
 //            startActivity(Intent(this, TestBackgroundActivity::class.java))
-            PurchaseManager.open(this)
+            PurchaseManager.purchase(this)
         }
 
         btnChangeBackground.setOnClickListener {
-//            ChangeBackgroundActivity.open(this)
+            ChangeBackgroundActivity.open(this)
         }
     }
 }
