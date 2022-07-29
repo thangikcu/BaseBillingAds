@@ -4,7 +4,6 @@ import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.etx.toCurrency
 import com.mmgsoft.modules.libs.helpers.AmazonCurrency
 import com.mmgsoft.modules.libs.helpers.BillingType
-import com.mmgsoft.modules.libs.helpers.PREFS_MONEY
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import java.text.NumberFormat

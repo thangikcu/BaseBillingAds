@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
-import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.databinding.ActivitySplashLayoutBinding
-import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig.setBillingType
 
 

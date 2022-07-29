@@ -4,15 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.ProductDetails
 import com.google.android.material.card.MaterialCardView
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.base.BaseAdapterAutoViewHolder
-import com.mmgsoft.modules.libs.etx.gone
-import com.mmgsoft.modules.libs.etx.visible
 import com.mmgsoft.modules.libs.models.PurchaseProductDetails
 
 const val HOLDER_SUBS_TYPE = 1

@@ -1,14 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--suppress ALL -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/_6sdp"
     android:layout_marginTop="@dimen/_3sdp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
 
+    <!--suppress AndroidUnknownAttribute -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardImage"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <!--suppress AndroidUnknownAttribute -->
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imBackground"
                 android:layout_width="match_parent"

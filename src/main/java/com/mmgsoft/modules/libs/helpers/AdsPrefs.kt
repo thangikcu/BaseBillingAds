@@ -1,13 +1,8 @@
 package com.mmgsoft.modules.libs.helpers
 
 import android.content.Context
-import com.google.gson.ExclusionStrategy
-import com.google.gson.FieldAttributes
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.google.gson.annotations.Expose
 import com.google.gson.reflect.TypeToken
-import com.mmgsoft.modules.libs.manager.BackgroundManager.getWasPaidBackgrounds
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.ADS_PREFS_NAME
 import java.lang.reflect.Type

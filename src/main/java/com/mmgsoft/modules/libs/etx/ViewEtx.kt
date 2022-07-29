@@ -2,7 +2,6 @@ package com.mmgsoft.modules.libs.etx
 
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.core.view.doOnLayout
 
 internal fun View.visible() {
     this.visibility = View.VISIBLE

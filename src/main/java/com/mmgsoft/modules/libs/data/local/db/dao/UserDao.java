@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-
 import com.mmgsoft.modules.libs.data.model.db.User;
 
 import java.util.List;

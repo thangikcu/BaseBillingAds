@@ -3,7 +3,6 @@ package com.mmgsoft.modules.libs.amzbiling
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,7 +48,10 @@ class AmazonIapActivity : BaseIapAmzActivity(), OnItemClickListener<ProductItem>
         )
 
     override fun initData() {
-        imBack.setOnClickListener { super.onBackPressed() }
+        imBack.setOnClickListener {
+            @Suppress("DEPRECATION")
+            super.onBackPressed()
+        }
         initRecycler()
     }
 

@@ -13,7 +13,9 @@ import com.mmgsoft.modules.libs.databinding.ItemBackgroundBinding
 import com.mmgsoft.modules.libs.etx.afterMeasured
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.models.Background
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val UPDATE_WAS_PAID = "UPDATE_WAS_PAID"
 

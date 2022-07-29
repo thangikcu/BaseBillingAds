@@ -3,7 +3,6 @@ package com.mmgsoft.modules.libs.data.local.db.dao;
 import androidx.room.Dao;
 import androidx.room.Query;
 
-
 import com.mmgsoft.modules.libs.data.model.db.SubscriptionModel;
 
 import java.util.List;

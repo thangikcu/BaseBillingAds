@@ -13,12 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
-import com.mmgsoft.modules.libs.amzbiling.AmazonIapActivity
 import com.mmgsoft.modules.libs.base.BaseActivity
 import com.mmgsoft.modules.libs.dialog.BuyBackgroundBottomSheet
 import com.mmgsoft.modules.libs.etx.setStatusBarColor
 import com.mmgsoft.modules.libs.etx.setStatusBarTextColorDark
-import com.mmgsoft.modules.libs.helpers.AmazonScreenType
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager.addWasPaidBackground
