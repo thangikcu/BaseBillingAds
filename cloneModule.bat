@@ -44,11 +44,11 @@ ECHO task generatePostData() { file("POST").mkdir(); file("POST/Permissions.txt"
 ECHO task generateKeystore() { if (!file(STORE_FILE).exists()) { file('keystore').mkdir(); project.exec { executable = 'keytool'; def args = Arrays.asList('-genkey', '-v', '-keystore', STORE_FILE, '-alias', KEY_ALIAS, '-storepass', STORE_PASSWORD, '-keypass', KEY_PASSWORD, '-dname', "CN=$APPLICATION_ID", '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000'); setArgs(args) }; project.exec { commandLine 'git', 'add', STORE_FILE } } }>> build.gradle
 Echo def addLineToFile(content, path) { project.exec { executable("cmd"); setArgs(Arrays.asList("/C", "echo $content >> $path")) } }>> build.gradle
 ECHO def loadProperties(filename) { def properties = new Properties(); rootProject.file(filename).withInputStream { properties.load(it) }; return properties }>> build.gradle
-ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; signingConfig signingConfigs.production; targetSdkVersion 33; minSdkVersion 21 }; compileSdkVersion 33; buildToolsVersion = "33.0.0" }>> build.gradle
+ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; signingConfig signingConfigs.production; targetSdk 32; minSdk 21 }; compileSdk 32; buildToolsVersion = "32.0.0" }>> build.gradle
 
-CD src/main
-ECHO. >> AndroidManifest.xml
-ECHO "<!--Bế em vào lòng application đi anh <3 <activity android:parentActivityName="com.wekkkkk.remindernote.LoginActivity" android:name="com.mmgsoft.modules.libs.EntryActivity" android:exported="true" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" android:theme="@style/Theme.App.Fullscreen"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity>-->">> AndroidManifest.xml
-ECHO. >> AndroidManifest.xml
+@REM CD src/main
+@REM ECHO. >> AndroidManifest.xml
+@REM ECHO "<!--Bế em vào lòng application đi anh <3 <activity android:parentActivityName="com.wekkkkk.remindernote.LoginActivity" android:name="com.mmgsoft.modules.libs.EntryActivity" android:exported="true" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" android:theme="@style/Theme.App.Fullscreen"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity>-->">> AndroidManifest.xml
+@REM ECHO. >> AndroidManifest.xml
 
 EXIT
