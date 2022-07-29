@@ -19,17 +19,13 @@ public class AppDbHelper implements DbHelper {
     @Override
     public boolean insertEntitlementRecord(EntitlementModel model) {
         long result = mAppDatabase.entitlementDao().insert(model);
-        if (result > 0)
-            return true;
-        return false;
+        return result > 0;
     }
 
     @Override
     public boolean insertSubscriptionRecord(SubscriptionModel model) {
         long result = mAppDatabase.subscriptionDao().insert(model);
-        if (result > 0)
-            return true;
-        return false;
+        return result > 0;
     }
 
     @Override

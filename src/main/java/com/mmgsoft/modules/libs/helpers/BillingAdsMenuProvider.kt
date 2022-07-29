@@ -11,7 +11,7 @@ import com.mmgsoft.modules.libs.manager.PurchaseManager
 
 class BillingAdsMenuProvider(private val activity: Activity) : MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.menu, menu);
+        menuInflater.inflate(R.menu.menu, menu)
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -21,7 +21,7 @@ class BillingAdsMenuProvider(private val activity: Activity) : MenuProvider {
                 true
             }
             R.id.action_background -> {
-                ChangeBackgroundActivity.open(activity);
+                ChangeBackgroundActivity.open(activity)
                 true
             }
             else -> {

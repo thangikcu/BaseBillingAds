@@ -1,23 +1,38 @@
 package com.mmgsoft.modules.libs
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.mmgsoft.modules.libs.databinding.ActivitySplashLayoutBinding
+import com.mmgsoft.modules.libs.helpers.BillingAdsHelper
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig.setBillingType
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class EntryActivity : AppCompatActivity() {
 
+    companion object {
+        private const val BILLING_ADS = "BillingAds"
+    }
+
     private lateinit var binding: ActivitySplashLayoutBinding
     private lateinit var fullscreenContent: View
+    private lateinit var activityLifeCycleCallbacks: Application.ActivityLifecycleCallbacks
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivitySplashLayoutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        fullscreenContent = binding.fullscreenContent
+        setFullscreen()
 
         AdsComponents.initialize(
             application,
@@ -26,32 +41,39 @@ class EntryActivity : AppCompatActivity() {
         )
 
         AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
-            startActivity(supportParentActivityIntent)
-//            overridePendingTransition(0, 0)
+            application.registerActivityLifecycleCallbacks(activityLifeCycleCallbacks)
+            startActivity(supportParentActivityIntent!!.apply { putExtra(BILLING_ADS, true) })
             finish()
         }
 
+        activityLifeCycleCallbacks = object : Application.ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, bunddle: Bundle?) {
+                if (activity.intent?.getBooleanExtra(BILLING_ADS, false) == true
+                    && activity is AppCompatActivity
+                ) {
+                    activity.lifecycleScope.launch(Dispatchers.Main) {
+                        delay(200)
+                        BillingAdsHelper.inject(activity)
+                    }
+                }
+            }
+
+            override fun onActivityResumed(activity: Activity) = Unit
+            override fun onActivityStarted(p0: Activity) = Unit
+            override fun onActivityPaused(p0: Activity) = Unit
+            override fun onActivityStopped(p0: Activity) = Unit
+            override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) = Unit
+            override fun onActivityDestroyed(p0: Activity) = Unit
+        }
 
         /**
          * Log thông tin BILLING chỉ với DEBUG mode
          */
         AdsComponents.INSTANCE.logDebugBillingInfo()
-
-
-
-        binding = ActivitySplashLayoutBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        fullscreenContent = binding.fullscreenContent
-        setFullscreen()
     }
 
     @Suppress("DEPRECATION")
     private fun setFullscreen() {
-        // Hide UI first
-        supportActionBar?.hide()
-
-        // Delayed removal of status and navigation bar
         if (Build.VERSION.SDK_INT >= 30) {
             fullscreenContent.windowInsetsController?.hide(WindowInsets.Type.statusBars() or WindowInsets.Type.navigationBars())
         } else {

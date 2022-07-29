@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -13,11 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
  * dangkhoait1989@gmail.com
  */
 
+@SuppressWarnings("ALL")
 public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
-	private Drawable mHorizontalDivider;
-	private Drawable mVerticalDivider;
-	private int mNumColumns;
+	private final Drawable mHorizontalDivider;
+	private final Drawable mVerticalDivider;
+	private final int mNumColumns;
 
 	/**
 	 * Sole constructor. Takes in {@link Drawable} objects to be used as
@@ -43,7 +45,7 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 	 * @param state  The current RecyclerView.State of the RecyclerView
 	 */
 	@Override
-	public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+	public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
 		drawHorizontalDividers(canvas, parent);
 		drawVerticalDividers(canvas, parent);
 

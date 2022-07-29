@@ -3,6 +3,7 @@ package com.mmgsoft.modules.libs.customview;
 import android.graphics.Rect;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -12,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
-	private int space;
-	private boolean mIsVertical;
+	private final int space;
+	private final boolean mIsVertical;
 
 	public SpacesItemDecoration(int space, boolean isVertical) {
 		this.space = space;
@@ -21,7 +22,7 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
 	}
 
 	@Override
-	public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+	public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
 		if (!mIsVertical) {
 //			if (parent.getChildLayoutPosition(view) == 0)
 //				outRect.left = space;

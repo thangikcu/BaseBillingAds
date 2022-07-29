@@ -49,7 +49,7 @@ abstract class BaseAdapter<T, VH: RecyclerView.ViewHolder> : RecyclerView.Adapte
         }
     }
 
-    open protected fun onBindViewPayloadHolder(holder: VH, position: Int, any: Any) {}
+    protected open fun onBindViewPayloadHolder(holder: VH, position: Int, any: Any) {}
 
     abstract fun onHandleCreateViewHolder(itemView: View): VH
 
