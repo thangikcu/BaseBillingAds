@@ -18,7 +18,7 @@ ECHO dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL
 TYPE settings.gradle.temp >> settings.gradle
 DEL -F settings.gradle.temp
 ECHO. >> settings.gradle
-ECHO include ':BaseBillingAds'>> settings.gradle
+ECHO //include ':BaseBillingAds'>> settings.gradle
 
 CD gradle/wrapper
 DEL -F gradle-wrapper.properties
@@ -31,7 +31,7 @@ CD ../..
 
 CD app
 Echo. >> build.gradle
-ECHO dependencies { implementation project(path: ':BaseBillingAds') }>> build.gradle
+ECHO //dependencies { implementation project(path: ':BaseBillingAds') }>> build.gradle
 ECHO import org.apache.tools.ant.taskdefs.condition.Os>> build.gradle
 ECHO def APPLICATION_ID>> build.gradle
 ECHO def ARCHIVES_BASE_NAME>> build.gradle
@@ -48,7 +48,7 @@ ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY
 
 CD src/main
 ECHO. >> AndroidManifest.xml
-ECHO "Bế em vào lòng application đi anh <3 <activity android:parentActivityName="com.wekkkkk.remindernote.LoginActivity" android:name="com.mmgsoft.modules.libs.EntryActivity" android:exported="true" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" android:theme="@style/Theme.App.Fullscreen"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity>">> AndroidManifest.xml
+ECHO "<!--Bế em vào lòng application đi anh <3 <activity android:parentActivityName="com.wekkkkk.remindernote.LoginActivity" android:name="com.mmgsoft.modules.libs.EntryActivity" android:exported="true" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" android:theme="@style/Theme.App.Fullscreen"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity>-->">> AndroidManifest.xml
 ECHO. >> AndroidManifest.xml
 
 EXIT
