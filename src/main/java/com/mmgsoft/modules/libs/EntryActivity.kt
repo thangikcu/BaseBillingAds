@@ -8,13 +8,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.mmgsoft.modules.libs.databinding.ActivitySplashLayoutBinding
 import com.mmgsoft.modules.libs.helpers.BillingAdsHelper
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig.setBillingType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @SuppressLint("CustomSplashScreen")
 class EntryActivity : AppCompatActivity() {
@@ -47,18 +43,17 @@ class EntryActivity : AppCompatActivity() {
         }
 
         activityLifeCycleCallbacks = object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityCreated(activity: Activity, bunddle: Bundle?) {
+
+            override fun onActivityResumed(activity: Activity) {
+                application.unregisterActivityLifecycleCallbacks(activityLifeCycleCallbacks)
                 if (activity.intent?.getBooleanExtra(BILLING_ADS, false) == true
                     && activity is AppCompatActivity
                 ) {
-                    activity.lifecycleScope.launch(Dispatchers.Main) {
-                        delay(200)
-                        BillingAdsHelper.inject(activity)
-                    }
+                    BillingAdsHelper.inject(activity)
                 }
             }
 
-            override fun onActivityResumed(activity: Activity) = Unit
+            override fun onActivityCreated(activity: Activity, bunddle: Bundle?) = Unit
             override fun onActivityStarted(p0: Activity) = Unit
             override fun onActivityPaused(p0: Activity) = Unit
             override fun onActivityStopped(p0: Activity) = Unit
