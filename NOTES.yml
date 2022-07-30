@@ -1,0 +1,37 @@
+
+Build job: https://gitlab.com/cicd210/building-artifacts.git
+
+Clone single branch: git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
+
+Skip watching: git update-index --skip-worktree secret.properties
+Unskip: git update-index --no-skip-worktree secret.properties
+
+Use keytool: {
+                 keytool -printcert -jarfile Google_com.lylyly.ipviewerpro-release.aab
+                 set PATH=%PATH%;%JAVA_HOME%\bin
+}
+
+User for google firebase: implementation platform('com.google.firebase:firebase-bom:30.3.1')
+
+
+Activity Entry: {
+                    <activity
+                    android:name="com.mmgsoft.modules.libs.EntryActivity"
+                    android:exported="true"
+                    android:parentActivityName=".MainActivity"
+                    android:screenOrientation="portrait"
+                    android:theme="@style/Theme.App.Fullscreen">
+                    <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                    </activity>
+}
+
+                    gcloud firebase test android run \
+                    --type robo \
+                    --no-record-video \
+                    --app app-debug-unaligned.apk \
+                    --device model=Nexus6,version=21,locale=en,orientation=portrait  \
+                    --device model=Nexus7,version=19,locale=fr,orientation=landscape \
+                    --timeout 90s
