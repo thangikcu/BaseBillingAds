@@ -6,6 +6,8 @@ DEL /F/S/Q .git > NUL
 RMDIR /S/q .git
 
 CD ..
+CALL git add BaseBillingAds/*
+
 ECHO #android.useAndroidX=true>> gradle.properties
 ECHO #android.enableJetifier=true>> gradle.properties
 ECHO org.gradle.parallel=true>> gradle.properties
