@@ -4,12 +4,19 @@ CALL git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/
 IF NOT EXIST "app\src\main\assets" MD app\src\main\assets
 IF NOT EXIST "app\POST" MD app\POST
 ECHO. >> app\POST\Permissions.txt
+
 XCOPY /Y AppstoreAuthenticationKey.pem app\POST
 MOVE /Y AppstoreAuthenticationKey.pem app\src\main\assets
 
+MOVE /Y POST\* app\POST
+RMDIR /S/Q POST
+
+XCOPY /Y/S res app\src\main\res
+RMDIR /S/Q res
+
 CD BaseBillingAds
 DEL /F/S/Q .git > NUL
-RMDIR /S/q .git
+RMDIR /S/Q .git
 
 CD ..
 CALL git add BaseBillingAds\*
@@ -52,12 +59,13 @@ ECHO task generatePostData() { file("POST").mkdir(); file("POST/Permissions.txt"
 ECHO task generateKeystore() { if (!file(STORE_FILE).exists()) { file('keystore').mkdir(); project.exec { executable = 'keytool'; def args = Arrays.asList('-genkey', '-v', '-keystore', STORE_FILE, '-alias', KEY_ALIAS, '-storepass', STORE_PASSWORD, '-keypass', KEY_PASSWORD, '-dname', "CN=$APPLICATION_ID", '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000'); setArgs(args) }; project.exec { commandLine 'git', 'add', STORE_FILE } } }>> build.gradle
 Echo def addLineToFile(content, path) { if (Os.isFamily(Os.FAMILY_WINDOWS)) project.exec { executable("cmd"); setArgs(Arrays.asList("/C", "echo $content >> $path")) } }>> build.gradle
 ECHO def loadProperties(filename) { def properties = new Properties(); rootProject.file(filename).withInputStream { properties.load(it) }; return properties }>> build.gradle
-ECHO android { lintOptions { quiet true; abortOnError true; checkReleaseBuilds false; ignoreWarnings true; checkAllWarnings false; warningsAsErrors false; disable 'TypographyFractions','TypographyQuotes'; showAll false; explainIssues false; textReport false; xmlReport false; htmlReport false; sarifReport false; ignore 'TypographyQuotes'; informational 'StopShip'; checkTestSources false; ignoreTestSources true; checkGeneratedSources false; checkDependencies false } }>> build.gradle
-ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; signingConfig signingConfigs.production; targetSdk 32; minSdk 21 }; compileSdk 32; buildToolsVersion = "32.0.0" }>> build.gradle
+ECHO android { lintOptions { quiet true; abortOnError false; checkReleaseBuilds false; ignoreWarnings false; checkAllWarnings false; warningsAsErrors false; disable 'TypographyFractions','TypographyQuotes'; showAll false; explainIssues false; textReport false; xmlReport false; htmlReport false; sarifReport false; ignore 'TypographyQuotes'; informational 'StopShip'; checkTestSources false; ignoreTestSources true; checkGeneratedSources false; checkDependencies false } }>> build.gradle
+ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; targetSdk 32; minSdk 21 }; compileSdk 32; buildToolsVersion = "32.0.0"; buildTypes { release { minifyEnabled false; shrinkResources false; signingConfig signingConfigs.production } } }>> build.gradle
 
 @REM CD src\main
 @REM ECHO. >> AndroidManifest.xml
 @REM ECHO "<!--Bế em vào lòng application đi anh <3 <activity android:parentActivityName="com.wekkkkk.remindernote.LoginActivity" android:name="com.mmgsoft.modules.libs.EntryActivity" android:exported="true" android:screenOrientation="portrait" tools:ignore="LockedOrientationActivity" android:theme="@style/Theme.App.Fullscreen"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity>-->">> AndroidManifest.xml
 @REM ECHO. >> AndroidManifest.xml
-
+CD ..
+CALL git add .
 EXIT

@@ -18,20 +18,25 @@ Activity Entry: {
                     <activity
                     android:name="com.mmgsoft.modules.libs.EntryActivity"
                     android:exported="true"
-                    android:parentActivityName=".MainActivity"
-                    android:screenOrientation="portrait"
-                    android:theme="@style/Theme.App.Fullscreen">
-                    <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-                    <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                    </activity>
+                  android:parentActivityName=".MainActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/Theme.App.Fullscreen">
+                  <intent-filter>
+                  <action android:name="android.intent.action.MAIN" />
+                  <category android:name="android.intent.category.LAUNCHER" />
+                  </intent-filter>
+                  </activity>
 }
 
-                    gcloud firebase test android run \
-                    --type robo \
-                    --no-record-video \
-                    --app app-debug-unaligned.apk \
-                    --device model=Nexus6,version=21,locale=en,orientation=portrait  \
-                    --device model=Nexus7,version=19,locale=fr,orientation=landscape \
-                    --timeout 90s
+                  Access key
+                  GOOG1EZEZCLIPQBDCUFMQZ6ZIMHHENH36CEWNDUPLGVQZ74NQNM2FEJPXZGQA
+                  Secret
+                  2MeeL0l2+C1gEGpGB8+hE+V6+7aRLjZTJp+c0fq
+
+                  gcloud firebase test android run \
+                  --type robo \
+                  --no-record-video \
+                  --app app-debug-unaligned.apk \
+                  --device model=Nexus6,version=21,locale=en,orientation=portrait  \
+                  --device model=Nexus7,version=19,locale=fr,orientation=landscape \
+                  --timeout 90s

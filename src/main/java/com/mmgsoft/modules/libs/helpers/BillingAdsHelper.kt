@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.customview.BillingAdsToolbar
+import com.mmgsoft.modules.libs.etx.gone
 import com.mmgsoft.modules.libs.widgets.BannerAds
 
 object BillingAdsHelper {
@@ -31,6 +32,10 @@ object BillingAdsHelper {
 
         if (viewParent is ActionBarOverlayLayout) {
             // Does not support Activity with Theme Actionbar
+            viewParent.addView(View(activity).apply {
+                id = myId
+                gone()
+            })
             return
         }
 
