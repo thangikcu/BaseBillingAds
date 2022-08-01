@@ -104,12 +104,11 @@ dependencies {
 
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation(files("./libs/amazon-appstore-sdk-3.0.3.jar"))
     // UPDATE BUILD GRADLE
     // parser
     // database
-    implementation("androidx.room:room-rxjava2:2.4.2")
-    annotationProcessor("androidx.room:room-compiler:2.4.2")
+    implementation("androidx.room:room-rxjava2:2.4.3")
+    annotationProcessor("androidx.room:room-compiler:2.4.3")
 }
 
 fun loadEnv(target: LibraryBuildType, envFile: String) {

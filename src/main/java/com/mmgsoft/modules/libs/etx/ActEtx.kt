@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
+import androidx.viewbinding.ViewBinding
 
 fun Activity.setStatusBarColor(@ColorRes color: Int) {
     window.statusBarColor = ContextCompat.getColor(this, color)
@@ -17,9 +18,15 @@ fun Activity.setStatusBarColor(@ColorRes color: Int) {
 fun Activity.setStatusBarTextColorDark() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        apply { }
     }
 }
 
+inline fun <V : ViewBinding> Activity.setContentView(binding: V, block: V.() -> Unit = { }): V {
+    setContentView(binding.root)
+    binding.block()
+    return binding
+}
 
 inline fun <reified T : Any> Activity.launchActivity(
     requestCode: Int = -1,
