@@ -11,6 +11,7 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.AdsComponents
+import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
 import com.mmgsoft.modules.libs.base.BaseActivity
@@ -28,6 +29,7 @@ import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.START_WITH_DESCRIPTION
 import com.mmgsoft.modules.libs.utils.START_WITH_PRODUCT_ID
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -136,7 +138,9 @@ class ChangeBackgroundActivity : BaseActivity() {
         }
 
         lnBound.setOnClickListener {
-            PurchaseManager.purchaseWithRefund(this)
+            if (!BuildConfig.ROBO_TEST) {
+                PurchaseManager.purchaseWithRefund(this)
+            }
         }
 
         updateCurrentMoney()
@@ -156,6 +160,7 @@ class ChangeBackgroundActivity : BaseActivity() {
                 mBackgroundAdapter.updateSelected(background)
             } else showAlertMessage(getString(R.string.change_background_failed))
         } else {
+
             BuyBackgroundBottomSheet(background) {
                 if (MoneyManager.buyBackground(background)) {
                     if (addWasPaidBackground(background)) {
@@ -164,7 +169,17 @@ class ChangeBackgroundActivity : BaseActivity() {
                         showToast(getString(R.string.buy_success))
                     } else showAlertMessage(getString(R.string.not_enough_money))
                 } else showAlertMessage(getString(R.string.not_enough_money))
-            }.show(supportFragmentManager, null)
+            }.run {
+                show(supportFragmentManager, null)
+
+                if (BuildConfig.ROBO_TEST) {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        delay(3000)
+                        dismiss()
+                        onBackPressed()
+                    }
+                }
+            }
         }
     }
 

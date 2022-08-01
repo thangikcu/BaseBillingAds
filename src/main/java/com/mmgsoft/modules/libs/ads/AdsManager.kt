@@ -68,6 +68,14 @@ class AdsManager {
 
     @JvmOverloads
     fun forceShowInterstitial(act: Activity, adClosed: (() -> Unit)? = null) {
+        if (BuildConfig.DEBUG || BuildConfig.ROBO_TEST) {
+            /**
+             * Bypass show interstitial for Debug
+             */
+            adClosed?.invoke()
+            return
+        }
+
         if (AdsComponents.INSTANCE.adsPrefs.isBillingInterstitial
             || !NetworkUtils.isNetworkAvailable(act)
         ) {

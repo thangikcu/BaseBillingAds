@@ -37,6 +37,11 @@ android {
 
             loadEnv(this, "env/product.properties")
         }
+
+        create("roboTest") {
+            initWith(getByName("release"))
+            buildConfigField("boolean", "ROBO_TEST", "true")
+        }
     }
 
     compileOptions {
@@ -104,6 +109,9 @@ dependencies {
 
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
+    implementation(platform("com.google.firebase:firebase-bom:30.3.1"))
+
     // UPDATE BUILD GRADLE
     // parser
     // database
@@ -112,8 +120,8 @@ dependencies {
 }
 
 fun loadEnv(target: LibraryBuildType, envFile: String) {
+    target.buildConfigField("boolean", "ROBO_TEST", "false")
     val envProperties = loadProperties(envFile)!!
-
     envProperties.getProperty("ADMOB_APP_ID").let {
         target.resValue("string", "ADMOB_APP_ID", it)
         target.buildConfigField("String", "ADMOB_APP_ID", it)
