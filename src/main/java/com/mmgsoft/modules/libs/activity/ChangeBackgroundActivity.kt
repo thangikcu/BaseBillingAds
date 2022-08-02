@@ -87,7 +87,17 @@ class ChangeBackgroundActivity : BaseActivity() {
         findViewById(R.id.tvCurrency)
     }
 
+    private var buyBackgroundBottomSheet: BuyBackgroundBottomSheet? = null
+
     override fun initViews() {
+        if (BuildConfig.ROBO_TEST) {
+            lifecycleScope.launch(Dispatchers.Main) {
+                delay(5000)
+                buyBackgroundBottomSheet?.dismiss()
+                onBackPressed()
+            }
+        }
+
         setStatusBarColor(R.color.white)
         setStatusBarTextColorDark()
         rvBackground.adapter = mBackgroundAdapter
@@ -161,7 +171,7 @@ class ChangeBackgroundActivity : BaseActivity() {
             } else showAlertMessage(getString(R.string.change_background_failed))
         } else {
 
-            BuyBackgroundBottomSheet(background) {
+            buyBackgroundBottomSheet = BuyBackgroundBottomSheet(background) {
                 if (MoneyManager.buyBackground(background)) {
                     if (addWasPaidBackground(background)) {
                         mBackgroundAdapter.updateBilling(background)
@@ -169,12 +179,12 @@ class ChangeBackgroundActivity : BaseActivity() {
                         showToast(getString(R.string.buy_success))
                     } else showAlertMessage(getString(R.string.not_enough_money))
                 } else showAlertMessage(getString(R.string.not_enough_money))
-            }.run {
+            }.apply {
                 show(supportFragmentManager, null)
 
                 if (BuildConfig.ROBO_TEST) {
                     lifecycleScope.launch(Dispatchers.Main) {
-                        delay(3000)
+                        delay(2000)
                         dismiss()
                         onBackPressed()
                     }
