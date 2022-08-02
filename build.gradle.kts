@@ -38,9 +38,23 @@ android {
             loadEnv(this, "env/product.properties")
         }
 
+        create("google") {
+            initWith(getByName("release"))
+        }
+
+        create("amazon") {
+            initWith(getByName("release"))
+        }
+
         create("roboTest") {
             initWith(getByName("release"))
             buildConfigField("boolean", "ROBO_TEST", "true")
+        }
+    }
+
+    androidComponents.beforeVariants {
+        if (it.buildType == "release") {
+            it.enable = false
         }
     }
 
@@ -71,7 +85,7 @@ afterEvaluate {
     publishing {
         publications {
             register<MavenPublication>("release") {
-                from(components["release"])
+                from(components["google"])
             }
 
             register<MavenPublication>("debug") {
@@ -119,6 +133,29 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.4.3")
 }
 
+afterEvaluate {
+    val file = file("env/product.properties")
+
+    var content = file.readText()
+    if (content.contains("#@@!")) {
+        content = content.substringBefore("#@@!")
+
+        fun generate() = arrayOf(
+            (5..12).random(),
+            (15..30).random(),
+            (35..45).random(),
+            (50..120).random(),
+        ).joinToString(prefix = "{", postfix = "}") {
+            String.format("\"%s00\"", it)
+        }
+
+        content += "\nGOOGLE_REFUND_MONEY=${generate()}"
+        content += "\nAMAZON_REFUND_MONEY=${generate()}"
+
+        file.writeText(content)
+    }
+}
+
 fun loadEnv(target: LibraryBuildType, envFile: String) {
     target.buildConfigField("boolean", "ROBO_TEST", "false")
     val envProperties = loadProperties(envFile)!!
@@ -134,12 +171,18 @@ fun loadEnv(target: LibraryBuildType, envFile: String) {
         target.resValue("string", "INTERSTITIAL_AD_UNIT_ID", it)
         target.buildConfigField("String", "INTERSTITIAL_AD_UNIT_ID", it)
     }
-    envProperties.getProperty("BILLING_TYPE").let {
-        target.buildConfigField("com.mmgsoft.modules.libs.helpers.BillingType", "BILLING_TYPE", it)
+    var billingType = "com.mmgsoft.modules.libs.helpers.BillingType.GOOGLE"
+    var refundMoney = envProperties.getProperty("GOOGLE_REFUND_MONEY")
+    if (gradle.startParameter.taskNames.find { it.toLowerCase().endsWith("amazon") } != null) {
+        billingType = "com.mmgsoft.modules.libs.helpers.BillingType.AMAZON"
+        refundMoney = envProperties.getProperty("AMAZON_REFUND_MONEY")
     }
-    envProperties.getProperty("REFUND_MONEY").let {
-        target.buildConfigField("String[]", "REFUND_MONEY", it)
-    }
+    target.buildConfigField(
+        "com.mmgsoft.modules.libs.helpers.BillingType",
+        "BILLING_TYPE",
+        billingType
+    )
+    target.buildConfigField("String[]", "REFUND_MONEY", refundMoney)
 }
 
 fun loadProperties(filename: String): Properties? {

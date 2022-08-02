@@ -33,6 +33,11 @@ class EntryActivity : AppCompatActivity() {
                 .setRefundMoneys(BuildConfig.REFUND_MONEY)
         )
 
+        /**
+         * Log thông tin BILLING chỉ với DEBUG mode
+         */
+        AdsComponents.INSTANCE.logDebugBillingInfo()
+
         AdsComponents.INSTANCE.adsManager.forceShowInterstitial(this) {
             application.registerActivityLifecycleCallbacks(object :
                 Application.ActivityLifecycleCallbacks {
@@ -56,11 +61,6 @@ class EntryActivity : AppCompatActivity() {
             startActivity(supportParentActivityIntent!!.apply { putExtra(BILLING_ADS, true) })
             finish()
         }
-
-        /**
-         * Log thông tin BILLING chỉ với DEBUG mode
-         */
-        AdsComponents.INSTANCE.logDebugBillingInfo()
     }
 
     @Suppress("DEPRECATION")
