@@ -1,10 +1,21 @@
 @ECHO OFF
 
-CALL git clone -b dev https://gitlab.com/mmg-app/taskdoitmanagerfree.git
 
-@REM Sửa tên này = XXX trong URL https://gitlab.com/.../[XXX].git
-CD https://gitlab.com/mmg-app/taskdoitmanagerfree.git
 
-CALL git checkout -b amazon
+SET REPOSITORY=https://gitlab.com/mmg-app/myscanner.git
+
+
+
+FOR /f "tokens=4 delims=/" %%a IN ("%REPOSITORY%") do SET PROJECT_NAME=%%a
+FOR /f "tokens=1 delims=." %%a IN ("%PROJECT_NAME%") do SET PROJECT_NAME=%%a
+
+CALL git clone -b dev %REPOSITORY%
+
+CD %PROJECT_NAME%
+CALL git checkout -b %PROJECT_NAME%
+
 CALL git remote add BuildJob https://gitlab.com/cicd310/building-artifacts.git
+
+CD ..
+DEL /F "%~f0"
 EXIT
