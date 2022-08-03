@@ -2,9 +2,11 @@ package com.mmgsoft.modules.libs.base
 
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.manager.BackgroundManager
 import com.mmgsoft.modules.libs.models.Background
+import kotlinx.coroutines.launch
 
 abstract class BaseAutoBackgroundActivity : BaseActivity() {
     /**
@@ -37,8 +39,10 @@ abstract class BaseAutoBackgroundActivity : BaseActivity() {
     }
 
     protected fun loadBackground(background: Background) {
-        AssetManager.loadBitmap(background.backgroundPath) {
-            backgroundImage.setImageBitmap(it)
+        lifecycleScope.launch {
+            AssetManager.loadBitmap(background.backgroundPath) {
+                backgroundImage.setImageBitmap(it)
+            }
         }
     }
 }

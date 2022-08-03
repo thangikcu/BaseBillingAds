@@ -7,9 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.scale
 import com.mmgsoft.modules.libs.AdsComponents
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.InputStream
 
@@ -36,7 +34,7 @@ object AssetManager {
      * resize ảnh để tăng performance
      */
     @Suppress("BlockingMethodInNonBlockingContext")
-    fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = CoroutineScope(Dispatchers.IO).launch {
+    suspend fun loadBitmap(path: String, doWork: (Bitmap) -> Unit) = withContext(Dispatchers.IO) {
         AdsComponents.INSTANCE.application.assets.open(path).use {
             val d = Drawable.createFromStream(it, null)
             val b = (d as BitmapDrawable).bitmap

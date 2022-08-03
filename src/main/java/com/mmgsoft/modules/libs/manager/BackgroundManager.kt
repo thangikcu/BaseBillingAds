@@ -6,15 +6,22 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.mmgsoft.modules.libs.AdsComponents
 import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.helpers.BackgroundLoadOn
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object BackgroundManager {
     private const val EXTRA_BACKGROUND_IMAGE = "EXTRA_BACKGROUND_IMAGE"
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun attach(application: Application) {
         val customPackageName = AdsComponentConfig.packageNameLoadBackground
@@ -162,8 +169,16 @@ object BackgroundManager {
      */
     fun loadBackgroundToImageView(imageView: ImageView) {
         getBackground { background ->
-            AssetManager.loadBitmap(background.backgroundPath) {
-                imageView.setImageBitmap(it)
+            val scope = if (imageView.context is AppCompatActivity) {
+                (imageView.context as AppCompatActivity).lifecycleScope
+            } else {
+                coroutineScope
+            }
+
+            scope.launch {
+                AssetManager.loadBitmap(background.backgroundPath) {
+                    imageView.setImageBitmap(it)
+                }
             }
         }
 
@@ -171,8 +186,16 @@ object BackgroundManager {
          * Just for Debug to ensure background Image show on the Activity
          */
         if (BuildConfig.DEBUG) {
-            AssetManager.loadBitmap("backgrounds/img_background_64.webp") {
-                imageView.setImageBitmap(it)
+            val scope = if (imageView.context is AppCompatActivity) {
+                (imageView.context as AppCompatActivity).lifecycleScope
+            } else {
+                coroutineScope
+            }
+
+            scope.launch {
+                AssetManager.loadBitmap("backgrounds/img_background_64.webp") {
+                    imageView.setImageBitmap(it)
+                }
             }
         }
     }
@@ -188,7 +211,9 @@ object BackgroundManager {
             createBackgroundViewAndAddToRoot(act, ImageView.ScaleType.CENTER_CROP)
         } else act.findViewById(imageID)
 
-        imageView?.let { loadBackgroundToImageView(it) }
+        imageView?.let {
+            loadBackgroundToImageView(it)
+        }
     }
 
     /**

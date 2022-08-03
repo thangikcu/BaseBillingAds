@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
 import com.mmgsoft.modules.libs.BuildConfig
@@ -14,6 +15,7 @@ import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.models.Background
 import com.mmgsoft.modules.libs.utils.AdsComponentConfig
+import kotlinx.coroutines.launch
 
 class BuyBackgroundBottomSheet(
     private val background: Background,
@@ -49,8 +51,10 @@ class BuyBackgroundBottomSheet(
         background.apply {
             tvPrice.text = "$price ${AdsComponentConfig.currency}"
             tvDescription.text = description
-            AssetManager.loadBitmap(backgroundPath) {
-                imBackground.setImageBitmap(it)
+            lifecycleScope.launch {
+                AssetManager.loadBitmap(backgroundPath) {
+                    imBackground.setImageBitmap(it)
+                }
             }
         }
 
