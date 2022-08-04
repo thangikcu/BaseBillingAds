@@ -11,7 +11,6 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.mmgsoft.modules.libs.AdsComponents
-import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.adapters.BackgroundAdapter
 import com.mmgsoft.modules.libs.base.BaseActivity
@@ -29,7 +28,6 @@ import com.mmgsoft.modules.libs.utils.AdsComponentConfig
 import com.mmgsoft.modules.libs.utils.START_WITH_DESCRIPTION
 import com.mmgsoft.modules.libs.utils.START_WITH_PRODUCT_ID
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -87,16 +85,7 @@ class ChangeBackgroundActivity : BaseActivity() {
         findViewById(R.id.tvCurrency)
     }
 
-    private var buyBackgroundBottomSheet: BuyBackgroundBottomSheet? = null
-
     override fun initViews() {
-        if (BuildConfig.ROBO_TEST) {
-            lifecycleScope.launch(Dispatchers.Main) {
-                delay(5000)
-                buyBackgroundBottomSheet?.dismiss()
-                onBackPressed()
-            }
-        }
 
         setStatusBarColor(R.color.white)
         setStatusBarTextColorDark()
@@ -148,9 +137,7 @@ class ChangeBackgroundActivity : BaseActivity() {
         }
 
         lnBound.setOnClickListener {
-            if (!BuildConfig.ROBO_TEST) {
-                PurchaseManager.purchaseWithRefund(this)
-            }
+            PurchaseManager.purchaseWithRefund(this)
         }
 
         updateCurrentMoney()
@@ -171,7 +158,7 @@ class ChangeBackgroundActivity : BaseActivity() {
             } else showAlertMessage(getString(R.string.change_background_failed))
         } else {
 
-            buyBackgroundBottomSheet = BuyBackgroundBottomSheet(background) {
+            BuyBackgroundBottomSheet(background) {
                 if (MoneyManager.buyBackground(background)) {
                     if (addWasPaidBackground(background)) {
                         mBackgroundAdapter.updateBilling(background)
@@ -181,14 +168,6 @@ class ChangeBackgroundActivity : BaseActivity() {
                 } else showAlertMessage(getString(R.string.not_enough_money))
             }.apply {
                 show(supportFragmentManager, null)
-
-                if (BuildConfig.ROBO_TEST) {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        delay(2000)
-                        dismiss()
-                        onBackPressed()
-                    }
-                }
             }
         }
     }

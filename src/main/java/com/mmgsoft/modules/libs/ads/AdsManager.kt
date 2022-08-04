@@ -13,6 +13,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.mmgsoft.modules.libs.AdsComponents
+import com.mmgsoft.modules.libs.BillingAdsBuildConfig
 import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.dialog.PrepareLoadingAdsDialog
 import com.mmgsoft.modules.libs.etx.gone
@@ -68,7 +69,7 @@ class AdsManager {
 
     @JvmOverloads
     fun forceShowInterstitial(act: Activity, adClosed: (() -> Unit)? = null) {
-        if (BuildConfig.DEBUG || BuildConfig.ROBO_TEST) {
+        if (BuildConfig.DEBUG || BillingAdsBuildConfig.ROBO_TEST) {
             /**
              * Bypass show interstitial for Debug
              */

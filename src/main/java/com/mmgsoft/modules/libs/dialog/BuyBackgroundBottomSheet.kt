@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
-import com.mmgsoft.modules.libs.BuildConfig
 import com.mmgsoft.modules.libs.R
 import com.mmgsoft.modules.libs.manager.AssetManager
 import com.mmgsoft.modules.libs.models.Background
@@ -64,9 +63,5 @@ class BuyBackgroundBottomSheet(
         }
 
         btnBuyNow.visibility = if (background.isBuy) View.GONE else View.VISIBLE
-
-        if (BuildConfig.ROBO_TEST) {
-            btnBuyNow.isClickable = false
-        }
     }
 }

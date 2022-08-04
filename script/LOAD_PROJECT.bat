@@ -14,7 +14,7 @@ CALL git clone -b dev %REPOSITORY%
 CD %PROJECT_NAME%
 CALL git checkout -b %PROJECT_NAME%
 
-CALL git remote add BuildJob https://gitlab.com/cicd310/building-artifacts.git
+CALL git remote add BuildJob https://gitlab.com/cicd410/building-artifact.git
 
 CD ..
 DEL /F "%~f0"

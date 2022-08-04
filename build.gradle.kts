@@ -48,7 +48,6 @@ android {
 
         create("roboTest") {
             initWith(getByName("release"))
-            buildConfigField("boolean", "ROBO_TEST", "true")
         }
     }
 
@@ -122,6 +121,7 @@ dependencies {
 //    implementation ("com.amazon.device:amazon-appstore-sdk:3.0.2")
 
 
+    api("com.amazon.device:amazon-appstore-sdk:3.0.3")
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
     implementation(platform("com.google.firebase:firebase-bom:30.3.1"))
@@ -157,7 +157,6 @@ afterEvaluate {
 }
 
 fun loadEnv(target: LibraryBuildType, envFile: String) {
-    target.buildConfigField("boolean", "ROBO_TEST", "false")
     val envProperties = loadProperties(envFile)!!
     envProperties.getProperty("ADMOB_APP_ID").let {
         target.resValue("string", "ADMOB_APP_ID", it)

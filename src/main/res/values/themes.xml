@@ -14,11 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.App" parent="Theme.MaterialComponents.Light" />
-
-    <style name="Theme.App.Fullscreen" parent="Theme.App">
-        <item name="android:actionBarStyle">@style/Widget.Theme.App.ActionBar.Fullscreen
-        </item>
+    <style name="Theme.App.Fullscreen" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:windowFullscreen">true</item>
