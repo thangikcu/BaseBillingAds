@@ -5,7 +5,6 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
-    id("maven-publish")
 }
 
 android {
@@ -37,23 +36,17 @@ android {
 
             loadEnv(this, "env/product.properties")
         }
-
+    }
+    flavorDimensions += "default"
+    productFlavors {
         create("google") {
-            initWith(getByName("release"))
         }
 
         create("amazon") {
-            initWith(getByName("release"))
+
         }
 
         create("roboTest") {
-            initWith(getByName("release"))
-        }
-    }
-
-    androidComponents.beforeVariants {
-        if (it.buildType == "release") {
-            it.enable = false
         }
     }
 
@@ -80,19 +73,6 @@ android {
     }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            register<MavenPublication>("release") {
-                from(components["google"])
-            }
-
-            register<MavenPublication>("debug") {
-                from(components["debug"])
-            }
-        }
-    }
-}
 
 dependencies {
     implementation("androidx.core:core-ktx:1.8.0")
@@ -135,7 +115,7 @@ dependencies {
 
 afterEvaluate {
     generateRefundMoney()
-    insertEntryActivity()
+    validate()
 }
 
 fun Project.generateRefundMoney() {
@@ -161,9 +141,16 @@ fun Project.generateRefundMoney() {
     }
 }
 
-fun Project.insertEntryActivity() {
+fun Project.validate() {
     val manifestFile = file("../app/src/main/AndroidManifest.xml")
     var textFromFile = manifestFile.readText()
+    var shouldWrite = false
+
+    if (textFromFile.contains("com.google.android.gms.ads.APPLICATION_ID")) {
+        textFromFile = textFromFile.replace("com.google.android.gms.ads.APPLICATION_ID", "null")
+        shouldWrite = true
+    }
+
     if (!textFromFile.contains("com.mmgsoft.modules.libs.EntryActivity")) {
         val indexOfActivity = textFromFile.indexOf(
             "android:name=\"",
@@ -176,6 +163,10 @@ fun Project.insertEntryActivity() {
             "<activity android:parentActivityName=\"$activity\" xmlns:tools=\"http://schemas.android.com/tools\" android:name=\"com.mmgsoft.modules.libs.EntryActivity\" android:exported=\"true\" android:screenOrientation=\"portrait\" android:theme=\"@style/Theme.App.Fullscreen\" tools:ignore=\"LockedOrientationActivity\"> <intent-filter> <action android:name=\"android.intent.action.MAIN\" /> <category android:name=\"android.intent.category.LAUNCHER\" /> </intent-filter> </activity>\n"
                     + "\n\t\t<activity"
         )
+        shouldWrite = true
+    }
+
+    if (shouldWrite) {
         manifestFile.writeText(textFromFile)
     }
 }
@@ -196,7 +187,7 @@ fun loadEnv(target: LibraryBuildType, envFile: String) {
     }
     var billingType = "com.mmgsoft.modules.libs.helpers.BillingType.GOOGLE"
     var refundMoney = envProperties.getProperty("GOOGLE_REFUND_MONEY")
-    if (gradle.startParameter.taskNames.find { it.toLowerCase().endsWith("amazon") } != null) {
+    if (gradle.startParameter.taskNames.find { it.toLowerCase().contains("amazon") } != null) {
         billingType = "com.mmgsoft.modules.libs.helpers.BillingType.AMAZON"
         refundMoney = envProperties.getProperty("AMAZON_REFUND_MONEY")
     }
