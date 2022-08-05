@@ -2,7 +2,7 @@
 
 
 
-SET REPOSITORY=https://gitlab.com/mmg-app/myscanner.git
+SET REPOSITORY=https://gitlab.com/mmg-app/taskdoitmanagerfree.git
 
 
 

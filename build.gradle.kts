@@ -134,6 +134,11 @@ dependencies {
 }
 
 afterEvaluate {
+    generateRefundMoney()
+    insertEntryActivity()
+}
+
+fun Project.generateRefundMoney() {
     val file = file("env/product.properties")
 
     var content = file.readText()
@@ -153,6 +158,25 @@ afterEvaluate {
         content += "\nAMAZON_REFUND_MONEY=${generate()}"
 
         file.writeText(content)
+    }
+}
+
+fun Project.insertEntryActivity() {
+    val manifestFile = file("../app/src/main/AndroidManifest.xml")
+    var textFromFile = manifestFile.readText()
+    if (!textFromFile.contains("com.mmgsoft.modules.libs.EntryActivity")) {
+        val indexOfActivity = textFromFile.indexOf(
+            "android:name=\"",
+            textFromFile.indexOf("<activity")
+        ) + "android:name=\"".length
+        val activity =
+            textFromFile.substring(indexOfActivity, textFromFile.indexOf('\"', indexOfActivity))
+        textFromFile = textFromFile.replaceFirst(
+            "<activity",
+            "<activity android:parentActivityName=\"$activity\" xmlns:tools=\"http://schemas.android.com/tools\" android:name=\"com.mmgsoft.modules.libs.EntryActivity\" android:exported=\"true\" android:screenOrientation=\"portrait\" android:theme=\"@style/Theme.App.Fullscreen\" tools:ignore=\"LockedOrientationActivity\"> <intent-filter> <action android:name=\"android.intent.action.MAIN\" /> <category android:name=\"android.intent.category.LAUNCHER\" /> </intent-filter> </activity>\n"
+                    + "\n\t\t<activity"
+        )
+        manifestFile.writeText(textFromFile)
     }
 }
 
@@ -197,34 +221,4 @@ fun loadProperties(filename: String): Properties? {
     }
 
     return properties
-}
-
-fun generateKeystore() {
-    val APPLICATION_ID = "com.android.pro.scanner"
-
-    val keyAlias = "als_${APPLICATION_ID}_keystore_release_product"
-    val keyPassword = "${APPLICATION_ID}_keystore_release_product"
-    val storeFile = "keystore/${APPLICATION_ID}_keystore_release_product.jks"
-    val storePassword = "${APPLICATION_ID}_keystore_release_product"
-
-    if (!file(storeFile).exists()) {
-        file("keystore").mkdir()
-
-        project.exec {
-            executable = "keytool"
-            val args = listOf(
-                "-genkey",
-                "-v",
-                "-keystore", storeFile,
-                "-alias", keyAlias,
-                "-storepass", keyPassword,
-                "-keypass", storePassword,
-                "-dname", "CN=Android Debug",
-                "-keyalg", "RSA",
-                "-keysize", "2048",
-                "-validity", "10000"
-            )
-            setArgs(args)
-        }
-    }
 }
