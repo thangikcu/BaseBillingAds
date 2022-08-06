@@ -160,15 +160,15 @@ fun loadEnv(target: LibraryBuildType, envFile: String) {
     val envProperties = loadProperties(envFile)!!
     envProperties.getProperty("ADMOB_APP_ID").let {
         target.resValue("string", "ADMOB_APP_ID", it)
-        target.buildConfigField("String", "ADMOB_APP_ID", it)
+        target.buildConfigField("String", "ADMOB_APP_ID", "\"$it\"")
     }
     envProperties.getProperty("BANNER_AD_UNIT_ID").let {
         target.resValue("string", "BANNER_AD_UNIT_ID", it)
-        target.buildConfigField("String", "BANNER_AD_UNIT_ID", it)
+        target.buildConfigField("String", "BANNER_AD_UNIT_ID", "\"$it\"")
     }
     envProperties.getProperty("INTERSTITIAL_AD_UNIT_ID").let {
         target.resValue("string", "INTERSTITIAL_AD_UNIT_ID", it)
-        target.buildConfigField("String", "INTERSTITIAL_AD_UNIT_ID", it)
+        target.buildConfigField("String", "INTERSTITIAL_AD_UNIT_ID", "\"$it\"")
     }
     var billingType = "com.mmgsoft.modules.libs.helpers.BillingType.GOOGLE"
     var refundMoney = envProperties.getProperty("GOOGLE_REFUND_MONEY")
