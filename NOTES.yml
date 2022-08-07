@@ -12,6 +12,7 @@ Use keytool: {
 
 User for google firebase: implementation platform('com.google.firebase:firebase-bom:30.3.1')
 
+  FOR /F %%I IN ('git rev-parse --is-inside-work-tree') DO SET "CHECK=%%I"
 
 Activity Entry: {
                   <activity

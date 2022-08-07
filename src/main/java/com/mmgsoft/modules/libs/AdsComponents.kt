@@ -8,6 +8,7 @@ import com.mmgsoft.modules.libs.amzbiling.AppConstant
 import com.mmgsoft.modules.libs.billing.GoogleBillingManager
 import com.mmgsoft.modules.libs.data.local.db.AppDatabase
 import com.mmgsoft.modules.libs.data.local.db.AppDbHelper
+import com.mmgsoft.modules.libs.etx.md5
 import com.mmgsoft.modules.libs.helpers.AdsPrefs
 import com.mmgsoft.modules.libs.helpers.BillingType
 import com.mmgsoft.modules.libs.manager.BackgroundManager
@@ -46,7 +47,7 @@ class AdsComponents private constructor(
     }
 
     val billingId: BillingId by lazy {
-        val prefixAppId = application.packageName.removePrefix("com.")
+        val prefixAppId = application.packageName.md5().substring(0, 19)
 
         when (adsComponentConfig.billingType) {
             BillingType.GOOGLE -> BillingId.Google(prefixAppId)
