@@ -33,7 +33,6 @@ ECHO org.gradle.parallel=true>> gradle.properties
 TYPE settings.gradle >> settings.gradle.temp
 DEL /F settings.gradle
 ECHO pluginManagement { repositories { gradlePluginPortal(); google(); mavenCentral(); jcenter() } }>> settings.gradle
-ECHO plugins { id 'com.android.application' version '7.2.2' apply false; id 'com.android.library' version '7.2.2' apply false; id 'org.jetbrains.kotlin.android' version '1.7.10' apply false }>> settings.gradle
 ECHO dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral(); jcenter(); maven { url "https://jitpack.io" } } }>> settings.gradle
 TYPE settings.gradle.temp >> settings.gradle
 DEL /F settings.gradle.temp
@@ -46,6 +45,7 @@ ECHO /*>> build.gradle
 TYPE build.gradle.temp >> build.gradle
 DEL /F build.gradle.temp
 ECHO */>> build.gradle
+ECHO plugins { id 'com.android.application' version '7.2.2' apply false; id 'com.android.library' version '7.2.2' apply false; id 'org.jetbrains.kotlin.android' version '1.7.10' apply false }>> build.gradle
 
 IF NOT EXIST "gradle\wrapper" MD gradle\wrapper
 CD gradle\wrapper
@@ -85,7 +85,7 @@ ECHO def addLineToFile(content, path) { if (Os.isFamily(Os.FAMILY_WINDOWS)) proj
 ECHO def loadProperties(filename) { def properties = new Properties(); rootProject.file(filename).withInputStream { properties.load(it) }; return properties }>> build.gradle
 ECHO private static String readFromInputStream(File file) { StringBuilder resultStringBuilder = new StringBuilder(); BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")); String line; while ((line = br.readLine()) != null) resultStringBuilder.append(line).append("\n"); br.close(); return resultStringBuilder.toString(); }>> build.gradle
 ECHO android { lintOptions { quiet true; abortOnError false; checkReleaseBuilds false; ignoreWarnings false; checkAllWarnings false; warningsAsErrors false; disable 'TypographyFractions','TypographyQuotes'; showAll false; explainIssues false; textReport false; xmlReport false; htmlReport false; sarifReport false; ignore 'TypographyQuotes'; informational 'StopShip'; checkTestSources false; ignoreTestSources true; checkGeneratedSources false; checkDependencies false } }>> build.gradle
-ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; targetSdk 32; minSdk 21; versionCode 1; versionName "v1.0.0" }; compileSdk 32; buildToolsVersion = "32.0.0"; buildTypes { release { minifyEnabled false; shrinkResources false; signingConfig signingConfigs.production }; }; flavorDimensions "default"; productFlavors { roboTest { versionNameSuffix "-roboTest" }; google { versionNameSuffix "-google" }; amazon { versionNameSuffix "-amazon" } } }>> build.gradle
+ECHO android { signingConfigs { production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; targetSdk 32; minSdk 21; versionCode 1; versionName "v1.0.0" }; compileSdk 32; buildToolsVersion = "32.0.0"; buildTypes { release { minifyEnabled false; shrinkResources false; signingConfig signingConfigs.production }; }; flavorDimensions "default"; productFlavors { roboTest { versionNameSuffix "-roboTest" }; google { versionNameSuffix "-google" }; amazon { versionNameSuffix "-amazon" } }; compileOptions { sourceCompatibility = JavaVersion.VERSION_11; targetCompatibility = JavaVersion.VERSION_11 } }>> build.gradle
 CD ..
 
 FOR %%I IN (.) DO SET PARENT_FOLDER=%%~nxI
