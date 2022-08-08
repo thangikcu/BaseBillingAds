@@ -21,7 +21,9 @@ IF EXIST "%PROJECT_NAME%" (
     CD ..
     ECHO.
     ECHO All done! auto exit after...
-    TIMEOUT /T 5 & DEL /F "LOAD_PROJECT.bat" & EXIT
+    TIMEOUT /T 5
+    IF EXIST "LOAD_PROJECT.bat" DEL /F "LOAD_PROJECT.bat"
+    EXIT
 )
 
 @REM DEL /F "%~f0"

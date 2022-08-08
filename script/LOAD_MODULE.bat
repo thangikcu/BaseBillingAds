@@ -103,7 +103,9 @@ CALL git commit -m "Init project with script"
 ECHO.
 ECHO All done! auto exit after...
 CD %ROOT_PATH%
-TIMEOUT /T 5 & DEL /F "LOAD_MODULE.bat" & EXIT
+TIMEOUT /T 5
+IF EXIST "LOAD_MODULE.bat" DEL /F "LOAD_MODULE.bat"
+EXIT
 
 @REM DEL /F "%~f0"
 @REM EXIT

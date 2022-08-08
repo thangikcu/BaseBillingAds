@@ -39,11 +39,11 @@ android {
     }
     flavorDimensions += "default"
     productFlavors {
+        create("roboTest") {
+        }
         create("google") {
         }
         create("amazon") {
-        }
-        create("roboTest") {
         }
     }
     compileOptions {
@@ -104,7 +104,7 @@ afterEvaluate {
 }
 
 fun Project.generateRefundMoney() {
-    val file = file("env/product.properties")
+    var file = file("env/product.properties")
 
     var content = file.readText()
     if (content.contains("#@@!")) {
@@ -119,9 +119,17 @@ fun Project.generateRefundMoney() {
             String.format("\"%s00\"", it)
         }
 
-        content += "\nGOOGLE_REFUND_MONEY=${generate()}"
-        content += "\nAMAZON_REFUND_MONEY=${generate()}"
+        val refundMoney =
+            "\nGOOGLE_REFUND_MONEY=${generate()}" + "\nAMAZON_REFUND_MONEY=${generate()}"
 
+        content += refundMoney
+
+        file.writeText(content)
+
+        file = file("env/dev.properties")
+        content = file.readText()
+        content = content.substringBefore("#@@!")
+        content += refundMoney
         file.writeText(content)
     }
 }
