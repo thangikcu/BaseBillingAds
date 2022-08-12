@@ -2,7 +2,7 @@ Build job: https://gitlab.com/cicd210/building-artifacts.git
 
 Clone single branch: git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
 
-Skip watching: git update-index --skip-worktree dev.properties
+Skip watching: git update-index --skip-worktree product.properties
 Unskip: git update-index --no-skip-worktree product.properties
 
 Use keytool: {

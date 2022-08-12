@@ -1,6 +1,6 @@
 @ECHO OFF
 SET "__NAME=BillingAds"
-SET "__VERSION=v1.0.0"
+SET "__VERSION=v1.0.1"
 
 TITLE %__NAME%
 
