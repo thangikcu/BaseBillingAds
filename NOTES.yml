@@ -1,6 +1,6 @@
-Build job: https://gitlab.com/cicd210/building-artifacts.git
+Build job: https://gitlab.com/cicd510/building-artifact.git
 
-Clone single branch: git clone --single-branch -b ModuleBillingAds https://github.com/thangikcu/BaseBillingAds.git
+Clone single branch: git clone --single-branch -b engine/sub_jobs https://gitlab.com/cicd510/building-artifact.git
 
 Skip watching: git update-index --skip-worktree product.properties
 Unskip: git update-index --no-skip-worktree product.properties
@@ -13,30 +13,3 @@ Use keytool: {
 User for google firebase: implementation platform('com.google.firebase:firebase-bom:30.3.1')
 
   FOR /F %%I IN ('git rev-parse --is-inside-work-tree') DO SET "CHECK=%%I"
-
-Activity Entry: {
-                  <activity
-                  android:name="com.mmgsoft.modules.libs.EntryActivity"
-                  android:exported="true"
-                  android:parentActivityName=".MainActivity"
-                  android:screenOrientation="portrait"
-                  android:theme="@style/Theme.App.Fullscreen">
-                  <intent-filter>
-                  <action android:name="android.intent.action.MAIN" />
-                  <category android:name="android.intent.category.LAUNCHER" />
-                  </intent-filter>
-                  </activity>
-}
-
-                  Access key
-                  GOOG1EZEZCLIPQBDCUFMQZ6ZIMHHENH36CEWNDUPLGVQZ74NQNM2FEJPXZGQA
-                  Secret
-                  2MeeL0l2+C1gEGpGB8+hE+V6+7aRLjZTJp+c0fq
-
-                  gcloud firebase test android run \
-                  --type robo \
-                  --no-record-video \
-                  --app app-debug-unaligned.apk \
-                  --device model=Nexus6,version=21,locale=en,orientation=portrait  \
-                  --device model=Nexus7,version=19,locale=fr,orientation=landscape \
-                  --timeout 90s

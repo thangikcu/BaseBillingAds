@@ -19,18 +19,19 @@ CALL git clone --progress -b dev %REPOSITORY%
 IF EXIST "%PROJECT_NAME%" (
     CD %PROJECT_NAME%
     CALL git checkout -b %PROJECT_NAME%
-    CALL git remote add BuildJob https://gitlab.com/cicd410/building-artifact.git
+    CALL git remote add BuildJob https://gitlab.com/cicd510/building-artifact.git
     MD NextStep
     CD NextStep
     MD res
     MD POST
     CD POST
-    ECHO ADMOB_APP_ID=>> product.properties
-    ECHO BANNER_AD_UNIT_ID=>> product.properties
-    ECHO INTERSTITIAL_AD_UNIT_ID=>> product.properties
+    ECHO ADMOB_APP_ID=#1@@!>> product.properties
+    ECHO BANNER_AD_UNIT_ID=#2@@!>> product.properties
+    ECHO INTERSTITIAL_AD_UNIT_ID=#3@@!>> product.properties
     ECHO #@@! Code below will be auto generate>> product.properties
     ECHO GOOGLE_REFUND_MONEY={"500", "1000", "2000", "5000"}>> product.properties
     ECHO AMAZON_REFUND_MONEY={"600", "1500", "3000", "7000"}>> product.properties
+    ECHO. >> product.properties
     CD ..
     CD ..
     CD ..
