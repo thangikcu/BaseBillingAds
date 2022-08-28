@@ -39,7 +39,7 @@ class AdsComponents private constructor(
                     GoogleBillingManager.init(
                         application,
                         billingId.toList(),
-                        listOf((billingId as BillingId.Google).noneConsume1)
+                        listOf(billingId.banner, billingId.interstitial)
                     )
                 }
             }

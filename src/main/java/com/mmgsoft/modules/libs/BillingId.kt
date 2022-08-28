@@ -27,14 +27,19 @@ sealed class BillingId(
 
     class Google(
         override val prefixId: String,
-        val noneConsume1: String = "$prefixId.subs.nonconsum.item1"
+        val noneConsume1: String = "$prefixId.inapp.consume.item1"
     ) : BillingId(
-        "$prefixId.inapp.nonconsum.rminitial",
-        "$prefixId.inapp.nonconsum.rmbanner",
+        "$prefixId.subs.rminitial",
+        "$prefixId.subs.rmbanner",
         "$prefixId.inapp.consume.item1",
         "$prefixId.inapp.consume.item2",
         "$prefixId.inapp.consume.item3",
     ) {
+
+        override fun toList(): List<String> {
+            return listOf(consume1, consume2, consume3, noneConsume1)
+        }
+
         override fun toString(): String {
             return buildString {
                 append(super.toString())
