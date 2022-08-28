@@ -1,5 +1,6 @@
 package com.mmgsoft.modules.libs.data.model.db;
 
+import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,6 +8,7 @@ import androidx.room.PrimaryKey;
 /**
  * Created by KhoaND32 on 9/6/20.
  */
+@Keep
 @Entity(tableName = "users")
 public class User {
 

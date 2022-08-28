@@ -44,7 +44,7 @@ ECHO pluginManagement { repositories { gradlePluginPortal(); google(); mavenCent
 ECHO dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral(); jcenter(); maven { url "https://jitpack.io" } } }>> settings.gradle
 TYPE settings.gradle.temp >> settings.gradle
 DEL /F settings.gradle.temp
-ECHO. >> settings.gradle
+ECHO.>> settings.gradle
 ECHO //@@!include ':BaseBillingAds'>> settings.gradle
 
 TYPE build.gradle >> build.gradle.temp
@@ -65,13 +65,16 @@ ECHO zipStorePath=wrapper/dists>> gradle-wrapper.properties
 ECHO zipStoreBase=GRADLE_USER_HOME>> gradle-wrapper.properties
 CD ..\..
 
+ECHO.>> app\proguard-rules.pro
+TYPE BaseBillingAds\proguard-rules.pro >> app\proguard-rules.pro
+
 CD app
 TYPE build.gradle >> build.gradle.temp
 DEL /F build.gradle
 ECHO taskBeforeBuild()>> build.gradle
 TYPE build.gradle.temp >> build.gradle
 DEL /F build.gradle.temp
-ECHO. >> build.gradle
+ECHO.>> build.gradle
 ECHO //@@!dependencies { implementation project(path: ':BaseBillingAds') }>> build.gradle
 ECHO //2@@!configurations.all { resolutionStrategy.eachDependency { if (requested.group == "com.jakewharton") { if (requested.name == "butterknife") useVersion("10.2.3")else if (requested.name == "butterknife-compiler") useVersion("10.2.1"); because("compatibale with androidx") } } }>> build.gradle
 ECHO def APPLICATION_ID>> build.gradle
@@ -93,7 +96,7 @@ ECHO def addLineToFile(content, path) { if (Os.isFamily(Os.FAMILY_WINDOWS)) proj
 ECHO def loadProperties(filename) { def properties = new Properties(); rootProject.file(filename).withInputStream { properties.load(it) }; return properties }>> build.gradle
 ECHO private static String readFromInputStream(File file) { StringBuilder resultStringBuilder = new StringBuilder(); BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")); String line; while ((line = br.readLine()) != null) resultStringBuilder.append(line).append("\n"); br.close(); return resultStringBuilder.toString(); }>> build.gradle
 ECHO android { lintOptions { quiet true; abortOnError false; checkReleaseBuilds false; ignoreWarnings false; checkAllWarnings false; warningsAsErrors false; disable 'TypographyFractions','TypographyQuotes'; showAll false; explainIssues false; textReport false; xmlReport false; htmlReport false; sarifReport false; ignore 'TypographyQuotes'; informational 'StopShip'; checkTestSources false; ignoreTestSources true; checkGeneratedSources false; checkDependencies false } }>> build.gradle
-ECHO android { signingConfigs { if (file(STORE_FILE).exists()) production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; targetSdk 32; minSdk 21; versionCode 1; versionName "v1.0.0" }; compileSdk 32; buildToolsVersion = "32.0.0"; buildTypes { release { minifyEnabled false; shrinkResources false; if (file(STORE_FILE).exists()) signingConfig signingConfigs.production }; }; flavorDimensions "default"; productFlavors { roboTest { versionNameSuffix "-roboTest" }; google { versionNameSuffix "-google" }; amazon { versionNameSuffix "-amazon" } }; compileOptions { sourceCompatibility = JavaVersion.VERSION_11; targetCompatibility = JavaVersion.VERSION_11 }; tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) { kotlinOptions { jvmTarget = "11" } } }>> build.gradle
+ECHO android { signingConfigs { if (file(STORE_FILE).exists()) production { keyAlias KEY_ALIAS; keyPassword KEY_PASSWORD; storeFile file(STORE_FILE); storePassword STORE_PASSWORD } }; defaultConfig { applicationId APPLICATION_ID; archivesBaseName = ARCHIVES_BASE_NAME; targetSdk 32; minSdk 21; versionCode 1; versionName "v1.0.0" }; compileSdk 32; buildToolsVersion = "32.0.0"; buildTypes { release { minifyEnabled true; shrinkResources false; proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'; if (file(STORE_FILE).exists()) signingConfig signingConfigs.production }; }; flavorDimensions "default"; productFlavors { roboTest { versionNameSuffix "-roboTest" }; google { versionNameSuffix "-google" }; amazon { versionNameSuffix "-amazon" } }; compileOptions { sourceCompatibility = JavaVersion.VERSION_11; targetCompatibility = JavaVersion.VERSION_11 }; tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) { kotlinOptions { jvmTarget = "11" } } }>> build.gradle
 CD ..
 
 FOR %%I IN (.) DO SET PARENT_FOLDER=%%~nxI

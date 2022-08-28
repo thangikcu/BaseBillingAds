@@ -1,9 +1,11 @@
 package com.mmgsoft.modules.libs.models
 
 import android.graphics.Bitmap
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 
 @Suppress("EqualsOrHashCode")
+@Keep
 data class Background(
     @Expose
     val price: String,

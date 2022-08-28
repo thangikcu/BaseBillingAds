@@ -197,6 +197,8 @@ class ChangeBackgroundActivity : BaseActivity() {
     private fun updateCurrentMoney() {
         val isShowBuy = backgroundMotion.currentState == R.id.end
 
+//      AdsComponents.INSTANCE.adsPrefs.money += 1000
+
         tvGold.text = AdsComponents.INSTANCE.adsPrefs.money.toString()
         tvCurrency.text = AdsComponentConfig.currency
         tvBuyGold.text = "Buy ${AdsComponentConfig.currency}"

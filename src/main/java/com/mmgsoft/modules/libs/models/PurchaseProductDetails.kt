@@ -1,8 +1,10 @@
 package com.mmgsoft.modules.libs.models
 
+import androidx.annotation.Keep
 import com.android.billingclient.api.ProductDetails
 
-data class PurchaseProductDetails (
+@Keep
+data class PurchaseProductDetails(
     var isBuy: Boolean = false,
     val productDetails: ProductDetails
 )

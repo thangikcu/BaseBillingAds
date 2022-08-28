@@ -1,9 +1,11 @@
 package com.mmgsoft.modules.libs.data.model.db;
 
+import androidx.annotation.Keep;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+@Keep
 @Entity(tableName = "tbl_subscriptions")
 public class SubscriptionModel {
     public String userId;
